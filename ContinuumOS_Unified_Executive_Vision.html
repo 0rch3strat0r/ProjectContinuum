@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ContinuumOS – The Future of Human Memory</title>
+<style>
+  * {box-sizing: border-box; margin: 0; padding: 0;}
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #1a1a1a;
+    line-height: 1.6;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+  }
+  
+  .hero {
+    background: linear-gradient(rgba(0,33,102,0.9), rgba(0,33,102,0.95)), url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:%23003366;stop-opacity:0.1" /><stop offset="100%" style="stop-color:%230066cc;stop-opacity:0.1" /></linearGradient></defs><rect width="1200" height="600" fill="url(%23g1)"/><circle cx="100" cy="100" r="80" fill="%23ffffff" opacity="0.05"/><circle cx="1100" cy="500" r="120" fill="%23ffffff" opacity="0.03"/><circle cx="600" cy="300" r="200" fill="%23ffffff" opacity="0.02"/></svg>') center/cover;
+    color: white;
+    padding: 4rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,206,0,0.1) 0%, transparent 70%);
+    animation: pulse 20s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    50% { transform: scale(1.1) rotate(180deg); }
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    letter-spacing: -1px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+  
+  .tagline {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    opacity: 0.95;
+    font-weight: 300;
+  }
+  
+  .hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+  }
+  
+  .stat {
+    text-align: center;
+  }
+  
+  .stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffce00;
+    display: block;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+  }
+  
+  .stat-label {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .section {
+    background: white;
+    border-radius: 12px;
+    padding: 3rem;
+    margin: 2rem 0;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #003366, #0066cc, #ffce00);
+  }
+  
+  h2 {
+    color: #003366;
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+  
+  h3 {
+    color: #0066cc;
+    font-size: 1.3rem;
+    margin: 1.5rem 0 0.8rem;
+    font-weight: 600;
+  }
+  
+  .vision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .vision-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    transform: translateY(0);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .vision-card::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    transform: rotate(45deg);
+  }
+  
+  .vision-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(102,126,234,0.4);
+  }
+  
+  .vision-card h4 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    position: relative;
+    z-index: 1;
+  }
+  
+  .vision-card p {
+    position: relative;
+    z-index: 1;
+    opacity: 0.95;
+  }
+  
+  .tech-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  
+  .tech-badge {
+    background: #f0f6ff;
+    color: #003366;
+    padding: 0.5rem 1.2rem;
+    border-radius: 25px;
+    font-weight: 500;
+    border: 2px solid #e0e8f4;
+    transition: all 0.2s;
+  }
+  
+  .tech-badge:hover {
+    background: #003366;
+    color: white;
+    transform: scale(1.05);
+  }
+  
+  .market-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .market-card {
+    background: #f8faff;
+    border: 2px solid #e0e8f4;
+    border-radius: 8px;
+    padding: 1.5rem;
+    transition: all 0.3s;
+  }
+  
+  .market-card:hover {
+    border-color: #0066cc;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,102,204,0.15);
+  }
+  
+  .market-card h4 {
+    color: #003366;
+    margin-bottom: 0.5rem;
+  }
+  
+  .market-size {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #0066cc;
+    margin: 0.5rem 0;
+  }
+  
+  .timeline-section {
+    position: relative;
+    padding-left: 3rem;
+  }
+  
+  .timeline-section::before {
+    content: '';
+    position: absolute;
+    left: 1rem;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom, #003366, #0066cc, #ffce00);
+  }
+  
+  .timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+  }
+  
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -2.4rem;
+    top: 0.5rem;
+    width: 16px;
+    height: 16px;
+    background: #ffce00;
+    border: 3px solid white;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px #003366;
+  }
+  
+  .timeline-item h4 {
+    color: #003366;
+    margin-bottom: 0.5rem;
+  }
+  
+  .metrics-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+  }
+  
+  .metrics-table th {
+    background: linear-gradient(135deg, #003366, #0066cc);
+    color: white;
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+  }
+  
+  .metrics-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #e0e8f4;
+  }
+  
+  .metrics-table tr:hover {
+    background: #f8faff;
+  }
+  
+  .highlight-number {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0066cc;
+  }
+  
+  .cta-section {
+    background: linear-gradient(135deg, #003366, #0066cc);
+    color: white;
+    padding: 4rem 2rem;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cta-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,206,0,0.1) 0%, transparent 50%);
+    animation: pulse 15s ease-in-out infinite;
+  }
+  
+  .cta-content {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .patent-badge {
+    display: inline-block;
+    background: #ffce00;
+    color: #003366;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    animation: glow 2s ease-in-out infinite;
+  }
+  
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(255,206,0,0.5); }
+    50% { box-shadow: 0 0 40px rgba(255,206,0,0.8); }
+  }
+  
+  .impact-statement {
+    background: linear-gradient(135deg, #ffce00, #ff9a00);
+    color: #003366;
+    padding: 2rem;
+    border-radius: 8px;
+    margin: 2rem 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(255,206,0,0.3);
+  }
+  
+  @media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    .tagline { font-size: 1.2rem; }
+    .hero-stats { gap: 2rem; }
+    .stat-number { font-size: 2rem; }
+    .section { padding: 2rem 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-content">
+    <h1>ContinuumOS / LegacySphere</h1>
+    <p class="tagline">Transform Every Photo, Voice, and Memory Into Living Interactive History</p>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-number">$10.5B</span>
+        <span class="stat-label">Year 7 Valuation</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">171M</span>
+        <span class="stat-label">Global VR Users</span>
+      </div>
+      <div class="stat">
+        <span class="stat-number">∞</span>
+        <span class="stat-label">Generational Impact</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  
+  <div class="section">
+    <div class="patent-badge">PLATFORM PATENT PENDING</div>
+    <h2>The Revolution: Why This Changes Everything</h2>
+    
+    <div class="impact-statement">
+      For the first time in human history, death doesn't end the conversation. 
+      Every grandchild can receive their grandfather's advice. Every student can interview 
+      a Civil War soldier. Every family's story lives forever—and grows richer with each generation.
+    </div>
+    
+    <div class="vision-grid">
+      <div class="vision-card">
+        <h4>Beyond Memorial</h4>
+        <p>Not just preserving memories—creating living, breathing, interactive presences that learn, grow, and pass wisdom across infinite generations.</p>
+      </div>
+      <div class="vision-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+        <h4>Universal Human Right</h4>
+        <p>Every human's story deserves immortality. From LDS genealogy centers to classroom VR, we're democratizing eternal presence.</p>
+      </div>
+      <div class="vision-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+        <h4>Self-Expanding Value</h4>
+        <p>Each birth, marriage, or life event automatically enriches the system. Families never cancel—they inherit and expand.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>The Technology Stack: One Pipeline, Infinite Applications</h2>
+    
+    <div class="tech-stack">
+      <div class="tech-badge">Photo Animation</div>
+      <div class="tech-badge">Voice Cloning</div>
+      <div class="tech-badge">RAG Memory Engine</div>
+      <div class="tech-badge">Real-time VR Avatar</div>
+      <div class="tech-badge">Hologram Projection</div>
+      <div class="tech-badge">Auto-Podcast Generation</div>
+      <div class="tech-badge">Social Media Clips</div>
+      <div class="tech-badge">Consent Ledger</div>
+    </div>
+    
+    <h3>Core Innovation</h3>
+    <p>Our multimodal pipeline ingests ANY family artifact—photos, journals, voice recordings—and transforms them into interactive avatars that can:</p>
+    <ul style="margin: 1rem 0 1rem 2rem; line-height: 1.8;">
+      <li>Hold real-time conversations in VR, understanding context and family history</li>
+      <li>Auto-generate years of podcast content from family stories</li>
+      <li>Project as holograms at funerals, weddings, or museums</li>
+      <li>Create viral TikTok/YouTube moments ("Grandpa meets his great-granddaughter")</li>
+      <li>Serve as expert witnesses in courtrooms or historical consultants in classrooms</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <h2>Market Opportunity: Multiple Billion-Dollar Verticals</h2>
+    
+    <div class="market-grid">
+      <div class="market-card">
+        <h4>👥 Genealogy/Consumer</h4>
+        <div class="market-size">$10B</div>
+        <p>by 2031 globally</p>
+        <ul style="margin-top: 0.5rem; font-size: 0.9rem;">
+          <li>77M US VR users</li>
+          <li>4.7M RootsTech attendees</li>
+          <li>FamilySearch: 6,300+ centers</li>
+        </ul>
+      </div>
+      
+      <div class="market-card">
+        <h4>🎓 K-12 Education</h4>
+        <div class="market-size">$36B</div>
+        <p>US EdTech spend</p>
+        <ul style="margin-top: 0.5rem; font-size: 0.9rem;">
+          <li>40% schools have AR/VR</li>
+          <li>75% retention vs 5% lecture</li>
+          <li>115,000 US schools</li>
+        </ul>
+      </div>
+      
+      <div class="market-card">
+        <h4>⚰️ Funeral/Memorial</h4>
+        <div class="market-size">$24B</div>
+        <p>US funeral market</p>
+        <ul style="margin-top: 0.5rem; font-size: 0.9rem;">
+          <li>$1-3k tribute upsells</li>
+          <li>2.8M deaths/year US</li>
+          <li>Perpetual revenue model</li>
+        </ul>
+      </div>
+      
+      <div class="market-card">
+        <h4>⚖️ Legal/Litigation</h4>
+        <div class="market-size">$26B</div>
+        <p>Global legal tech</p>
+        <ul style="margin-top: 0.5rem; font-size: 0.9rem;">
+          <li>Witness reconstruction</li>
+          <li>Jury visualization</li>
+          <li>$15k/firm licenses</li>
+        </ul>
+      </div>
+      
+      <div class="market-card">
+        <h4>🏛️ Museums/Tourism</h4>
+        <div class="market-size">$900M</div>
+        <p>US museum tech</p>
+        <ul style="margin-top: 0.5rem; font-size: 0.9rem;">
+          <li>27% higher retention</li>
+          <li>Heritage trail apps</li>
+          <li>$60k installations</li>
+        </ul>
+      </div>
+      
+      <div class="market-card">
+        <h4>🏢 Corporate Training</h4>
+        <div class="market-size">$3.5B</div>
+        <p>VR/AR training</p>
+        <ul style="margin-top: 0.5rem; font-size: 0.9rem;">
+          <li>Founder storytelling</li>
+          <li>Culture onboarding</li>
+          <li>69% CAGR growth</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Financial Projections: Conservative Path to $10B</h2>
+    
+    <table class="metrics-table">
+      <tr>
+        <th>Year</th>
+        <th>Family Subscribers</th>
+        <th>School Licenses</th>
+        <th>Total ARR</th>
+        <th>Enterprise Value</th>
+      </tr>
+      <tr>
+        <td><strong>Year 2</strong></td>
+        <td>550,000</td>
+        <td>8,000</td>
+        <td class="highlight-number">$155M</td>
+        <td>$1.2-1.6B</td>
+      </tr>
+      <tr>
+        <td><strong>Year 5</strong></td>
+        <td>2,000,000</td>
+        <td>40,000</td>
+        <td class="highlight-number">$710M</td>
+        <td>$5.7-7.1B</td>
+      </tr>
+      <tr>
+        <td><strong>Year 7</strong></td>
+        <td>2,950,000</td>
+        <td>59,000</td>
+        <td class="highlight-number">$1.05B</td>
+        <td>$8.4-10.5B</td>
+      </tr>
+    </table>
+    
+    <p style="margin-top: 1rem; font-style: italic;">Based on 8-10× ARR multiples (Duolingo trades at 14-19×)</p>
+  </div>
+
+  <div class="section" style="background: linear-gradient(135deg, #fff5e6 0%, #ffe4cc 100%); border: 3px solid #ff9a00;">
+    <h2 style="color: #d84315;">The $150B Opportunity: When Digital Estate Planning Becomes Standard</h2>
+    
+    <div class="impact-statement" style="background: linear-gradient(135deg, #ff6b6b, #d84315); color: white;">
+      What if preserving your consciousness became as standard as life insurance?<br>
+      What if every retirement plan included your digital presence for your descendants?
+    </div>
+    
+    <h3>The Paradigm Shift: From "Nice to Have" to "Essential Life Planning"</h3>
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin: 2rem 0;">
+      <div>
+        <h4>Today's Reality</h4>
+        <ul style="line-height: 1.8;">
+          <li>73% of Americans have life insurance</li>
+          <li>68% have written wills</li>
+          <li>45% have retirement accounts</li>
+          <li>0% have planned their eternal digital presence</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Tomorrow's Standard</h4>
+        <ul style="line-height: 1.8;">
+          <li>Financial planning ✓</li>
+          <li>Estate planning ✓</li>
+          <li>Healthcare directives ✓</li>
+          <li><strong>Digital consciousness preservation ✓</strong></li>
+        </ul>
+      </div>
+    </div>
+    
+    <h3>Market Penetration Model: Following Life Insurance's Path</h3>
+    
+    <table class="metrics-table">
+      <tr>
+        <th>Year</th>
+        <th>US Household Penetration</th>
+        <th>Global Households</th>
+        <th>Consumer ARR</th>
+        <th>Institutional ARR</th>
+        <th>Total ARR</th>
+      </tr>
+      <tr>
+        <td><strong>Year 7</strong></td>
+        <td>2.3% (3M)</td>
+        <td>500K</td>
+        <td>$525M</td>
+        <td>$525M</td>
+        <td class="highlight-number">$1.05B</td>
+      </tr>
+      <tr>
+        <td><strong>Year 10</strong></td>
+        <td>15% (20M)</td>
+        <td>5M</td>
+        <td>$3.7B</td>
+        <td>$2.3B</td>
+        <td class="highlight-number">$6B</td>
+      </tr>
+      <tr style="background: #fff3e0;">
+        <td><strong>Year 15</strong></td>
+        <td>40% (52M)</td>
+        <td>20M</td>
+        <td>$10.7B</td>
+        <td>$4.3B</td>
+        <td class="highlight-number" style="color: #d84315; font-size: 1.5rem;">$15B</td>
+      </tr>
+    </table>
+    
+    <h3>Why This Isn't Fantasy: The Distribution Revolution</h3>
+    
+    <div class="vision-grid" style="margin-top: 2rem;">
+      <div class="vision-card" style="background: linear-gradient(135deg, #ff6b6b, #ee5a24);">
+        <h4>Estate Planning Channel</h4>
+        <p>Every lawyer who writes a will adds digital preservation. 2.5M wills/year = 2.5M new families annually.</p>
+      </div>
+      <div class="vision-card" style="background: linear-gradient(135deg, #fdcb6e, #f39c12);">
+        <h4>Insurance Integration</h4>
+        <p>Life insurance companies bundle digital legacy. MetLife, Prudential, State Farm selling to 170M policyholders.</p>
+      </div>
+      <div class="vision-card" style="background: linear-gradient(135deg, #6c5ce7, #5f3dc4);">
+        <h4>Retirement Planning</h4>
+        <p>401k providers add "Digital Estate" option. Fidelity, Vanguard, Schwab reach 100M+ accounts.</p>
+      </div>
+    </div>
+    
+    <h3>The Network Effect Multiplier</h3>
+    <p style="font-size: 1.1rem; line-height: 1.8; margin: 2rem 0;">
+      Unlike life insurance, ContinuumOS has <strong>viral network effects</strong>:
+    </p>
+    <ul style="margin: 0 0 2rem 2rem; line-height: 2;">
+      <li>One grandparent adopts → entire family wants access (avg 2.3 additional subscriptions)</li>
+      <li>One student uses in school → parents see value → household adoption</li>
+      <li>One funeral shows hologram → every attendee considers it (avg 150 people)</li>
+      <li>Subscriptions inherit → 0% generational churn → permanent recurring revenue</li>
+    </ul>
+    
+    <div style="background: #fff3e0; padding: 2rem; border-radius: 8px; margin: 2rem 0;">
+      <h4 style="color: #d84315; margin-bottom: 1rem;">Valuation at Year 15 with $15B ARR:</h4>
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; text-align: center;">
+        <div>
+          <div style="font-size: 2rem; font-weight: 700; color: #ff6b6b;">$120B</div>
+          <div>at 8× multiple<br>(SaaS median)</div>
+        </div>
+        <div>
+          <div style="font-size: 2rem; font-weight: 700; color: #f39c12;">$150B</div>
+          <div>at 10× multiple<br>(AI/platform premium)</div>
+        </div>
+        <div>
+          <div style="font-size: 2rem; font-weight: 700; color: #5f3dc4;">$195B</div>
+          <div>at 13× multiple<br>(Duolingo comparable)</div>
+        </div>
+      </div>
+    </div>
+    
+    <p style="text-align: center; font-style: italic; color: #666; margin-top: 1rem;">
+      *Life insurance took 100 years to reach 73% penetration. With digital distribution and network effects, we can reach 40% in 15 years.
+    </p>
+  </div>
+
+  <div class="section">
+    <h2>Go-to-Market Timeline</h2>
+    
+    <div class="timeline-section">
+      <div class="timeline-item">
+        <h4>Months 0-6: Foundation</h4>
+        <p>File provisional patent • Build MVP photo→video→avatar pipeline • RootsTech demo</p>
+      </div>
+      
+      <div class="timeline-item">
+        <h4>Months 6-12: Dual Launch</h4>
+        <p>Consumer "VR Memories" on Quest/Vision • 500 pilot schools • Funeral/wedding soft launch</p>
+      </div>
+      
+      <div class="timeline-item">
+        <h4>Months 9-12: Global Soft Launch</h4>
+        <p>FamilySearch partnership live • English markets worldwide • 1M+ app downloads</p>
+      </div>
+      
+      <div class="timeline-item">
+        <h4>Year 2: Full Global</h4>
+        <p>ES-LA, FR, DE, JP languages • 14,800 international schools • API licensing to Ancestry</p>
+      </div>
+      
+      <div class="timeline-item">
+        <h4>Years 3-5: Scale</h4>
+        <p>HoloRoot kiosk network • Litigation/tourism verticals • Negative net churn achieved</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Why We Win: Compounding Network Effects</h2>
+    
+    <h3>🔄 The Perpetual Growth Engine</h3>
+    <ul style="margin: 1rem 0 1rem 2rem; line-height: 1.8;">
+      <li><strong>Self-Expanding Content:</strong> Every birth, marriage, death adds new nodes—system value grows automatically</li>
+      <li><strong>Inherited Subscriptions:</strong> Billing passes to heirs, defeating typical SaaS churn curves</li>
+      <li><strong>Viral Distribution:</strong> "Grandpa meets baby" clips are marketing that creates itself</li>
+      <li><strong>Cross-Vertical Leverage:</strong> Same avatar engine powers education, litigation, tourism—pure margin expansion</li>
+      <li><strong>Multi-Generation Lock-in:</strong> Once a family starts, they're invested for centuries, not years</li>
+    </ul>
+    
+    <h3>📊 Unit Economics That Compound</h3>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+      <div style="background: #f0f6ff; padding: 1rem; border-radius: 8px;">
+        <strong>CAC:</strong> $18<br>
+        <strong>via influencer shares</strong>
+      </div>
+      <div style="background: #f0f6ff; padding: 1rem; border-radius: 8px;">
+        <strong>ARPU:</strong> $165/year<br>
+        <strong>growing with life events</strong>
+      </div>
+      <div style="background: #f0f6ff; padding: 1rem; border-radius: 8px;">
+        <strong>Churn:</strong> <0.5%/mo<br>
+        <strong>after inheritance features</strong>
+      </div>
+      <div style="background: #f0f6ff; padding: 1rem; border-radius: 8px;">
+        <strong>Gross Margin:</strong> 85%<br>
+        <strong>pure software economics</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="section cta-section">
+    <div class="cta-content">
+      <h2>The Moment is Now</h2>
+      <p style="font-size: 1.2rem; margin: 1rem 0;">171M people already own VR headsets. AI can clone voices in seconds.<br>
+      Every family wants to preserve their legacy. Every school needs engaging history.</p>
+      
+      <h3 style="color: #ffce00; margin: 2rem 0 1rem;">We're not building a product.<br>We're building humanity's permanent memory.</h3>
+      
+      <p style="font-size: 1.1rem; opacity: 0.9;">First mover advantage expires in months, not years.</p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ContinuumOS & Legacy Stack – Stories That Live Forever</title>
+<style>
+  * {box-sizing: border-box; margin: 0; padding: 0;}
+  
+  body {
+    font-family: 'Crimson Text', Georgia, serif;
+    background: #0a0a0a;
+    color: #f0f0f0;
+    line-height: 1.8;
+    overflow-x: hidden;
+    position: relative;
+  }
+  
+  /* Animated background */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+      radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 40% 20%, rgba(240, 147, 251, 0.1) 0%, transparent 40%);
+    animation: drift 20s ease-in-out infinite;
+    z-index: -1;
+  }
+  
+  @keyframes drift {
+    0%, 100% { transform: scale(1) rotate(0deg); }
+    33% { transform: scale(1.1) rotate(120deg); }
+    66% { transform: scale(0.9) rotate(240deg); }
+  }
+  
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 2rem;
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Hero section */
+  .hero {
+    text-align: center;
+    padding: 4rem 0;
+    margin-bottom: 4rem;
+    position: relative;
+  }
+  
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 300;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .title-main {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 80px rgba(102, 126, 234, 0.5);
+    animation: glow 3s ease-in-out infinite;
+  }
+  
+  @keyframes glow {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.2); }
+  }
+  
+  .subtitle {
+    font-size: 1.5rem;
+    color: rgba(240, 240, 240, 0.7);
+    font-weight: 300;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: fadeIn 1s ease-out 0.5s;
+    animation-fill-mode: both;
+  }
+  
+  /* Section styling */
+  .section {
+    margin-bottom: 5rem;
+    animation: slideUp 0.8s ease-out;
+    animation-fill-mode: both;
+  }
+  
+  .section:nth-child(2) { animation-delay: 0.2s; }
+  .section:nth-child(3) { animation-delay: 0.4s; }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  h2 {
+    font-size: 2.5rem;
+    color: #667eea;
+    margin-bottom: 2rem;
+    font-weight: 300;
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  
+  h2::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 5px;
+    height: 80%;
+    background: linear-gradient(to bottom, #667eea, #764ba2);
+    border-radius: 3px;
+  }
+  
+  /* Opening statement */
+  .opening {
+    font-size: 1.4rem;
+    line-height: 2;
+    color: rgba(240, 240, 240, 0.9);
+    text-align: center;
+    margin: 3rem 0;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  .opening::before,
+  .opening::after {
+    content: '"';
+    font-size: 4rem;
+    color: rgba(102, 126, 234, 0.3);
+    position: absolute;
+  }
+  
+  .opening::before {
+    top: -10px;
+    left: -20px;
+  }
+  
+  .opening::after {
+    bottom: -30px;
+    right: -20px;
+    transform: rotate(180deg);
+  }
+  
+  /* Scene cards */
+  .scene {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin: 2rem 0;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.4s ease;
+  }
+  
+  .scene::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+    border-radius: 20px;
+    opacity: 0;
+    z-index: -1;
+    transition: opacity 0.4s ease;
+  }
+  
+  .scene:hover::before {
+    opacity: 1;
+  }
+  
+  .scene:hover {
+    transform: translateY(-5px);
+    background: rgba(20, 20, 30, 0.8);
+  }
+  
+  .scene-title {
+    font-size: 1.2rem;
+    color: #f093fb;
+    margin-bottom: 1rem;
+    font-style: italic;
+    letter-spacing: 1px;
+  }
+  
+  .scene p {
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: rgba(240, 240, 240, 0.85);
+  }
+  
+  /* Soft scene variant */
+  .scene-soft {
+    background: linear-gradient(135deg, rgba(255, 206, 0, 0.1) 0%, rgba(255, 154, 0, 0.1) 100%);
+    border-color: rgba(255, 206, 0, 0.3);
+  }
+  
+  .scene-soft::before {
+    background: linear-gradient(45deg, #ffce00, #ff9a00, #ff6b6b, #ee5a24);
+  }
+  
+  .scene-soft .scene-title {
+    color: #ffce00;
+  }
+  
+  /* Estate conversation section */
+  .estate-section {
+    background: linear-gradient(135deg, rgba(30, 30, 40, 0.8) 0%, rgba(40, 30, 50, 0.8) 100%);
+    border-radius: 30px;
+    padding: 3rem;
+    margin: 3rem 0;
+    border: 1px solid rgba(255, 206, 0, 0.2);
+  }
+  
+  .estate-intro {
+    font-size: 1.3rem;
+    color: #ffce00;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-style: italic;
+    line-height: 1.8;
+  }
+  
+  /* Process steps */
+  .process-steps {
+    display: grid;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .step {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    opacity: 0;
+    animation: fadeInLeft 0.6s ease-out forwards;
+  }
+  
+  .step:nth-child(1) { animation-delay: 0.1s; }
+  .step:nth-child(2) { animation-delay: 0.2s; }
+  .step:nth-child(3) { animation-delay: 0.3s; }
+  .step:nth-child(4) { animation-delay: 0.4s; }
+  
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .step-number {
+    flex-shrink: 0;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .step-content {
+    flex: 1;
+  }
+  
+  .step-title {
+    font-size: 1.3rem;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+  
+  .step-description {
+    color: rgba(240, 240, 240, 0.8);
+    font-size: 1.1rem;
+  }
+  
+  /* Quotes */
+  blockquote {
+    font-size: 1.5rem;
+    font-style: italic;
+    text-align: center;
+    margin: 3rem 2rem;
+    color: #f093fb;
+    position: relative;
+    line-height: 1.8;
+  }
+  
+  /* Footer */
+  footer {
+    text-align: center;
+    padding: 4rem 0 2rem;
+    margin-top: 5rem;
+    border-top: 1px solid rgba(102, 126, 234, 0.2);
+  }
+  
+  .footer-text {
+    font-size: 1.1rem;
+    line-height: 2;
+    color: rgba(240, 240, 240, 0.6);
+  }
+  
+  .footer-text strong {
+    color: #667eea;
+    display: block;
+    margin: 0.5rem 0;
+  }
+  
+  /* Decorative elements */
+  .divider {
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to right, #667eea, #764ba2, #f093fb);
+    margin: 3rem auto;
+    border-radius: 3px;
+  }
+  
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    h1 { font-size: 2.5rem; }
+    h2 { font-size: 2rem; }
+    .opening { font-size: 1.2rem; }
+    .scene { padding: 1.5rem; }
+    .container { padding: 2rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="hero">
+    <h1 class="title-main">ContinuumOS | Legacy Stack</h1>
+    <p class="subtitle">Two Narrative Frames</p>
+  </div>
+
+  <section class="section">
+    <h2>Conference Stage Introduction</h2>
+    
+    <div class="opening">
+      Good evening.<br>
+      Imagine you could press <strong>play</strong> on history—right here, right now, in 4K color and eye contact.
+    </div>
+    
+    <p style="font-size: 1.3rem; text-align: center; margin: 2rem 0; color: rgba(240, 240, 240, 0.8);">
+      <strong style="color: #667eea;">ContinuumOS</strong> is the canvas where every human story can be rendered live.<br>
+      At its heart sits the <strong style="color: #764ba2;">Legacy Stack</strong>—a time machine wearing jeans and sneakers.
+    </p>
+    
+    <div class="scene">
+      <div class="scene-title">Mom's Shoebox Moment</div>
+      <p>Tap "Revive," and great-grandma Maria smiles: "Ask me anything about 1947."</p>
+    </div>
+    
+    <div class="scene">
+      <div class="scene-title">Teen Homework Rescue</div>
+      <p>Kid interviews "Grandpa-in-his-twenties" in a virtual diner, cuts clip straight into their history report.</p>
+    </div>
+    
+    <div class="scene">
+      <div class="scene-title">Rainy-Day Family Binge</div>
+      <p>Couch + AirPlay + ancestor talk-show podcast — nobody checks their phone for twenty minutes.</p>
+    </div>
+    
+    <p style="font-size: 1.2rem; text-align: center; margin: 3rem 0; line-height: 2;">
+      Legacy Stack stitches context around every memory.<br>
+      Developers drop it into museums, brands, classrooms—it blooms everywhere.
+    </p>
+    
+    <blockquote>
+      Digital ancestry with a pulse.<br>
+      You'll just call it talking to family again.
+    </blockquote>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <h2>Living Room Estate Conversation</h2>
+    
+    <div class="estate-section">
+      <div class="estate-intro">
+        "We're here to keep <strong>Dad's voice</strong> in the room—<br>
+        today, next year, and for the great-grandchild he hasn't met yet."
+      </div>
+      
+      <div class="process-steps">
+        <div class="step">
+          <div class="step-number">1</div>
+          <div class="step-content">
+            <div class="step-title">Gather</div>
+            <div class="step-description">Notebooks, cassette tapes, Super-8 reels—scan them on-site.</div>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">2</div>
+          <div class="step-content">
+            <div class="step-title">Listen</div>
+            <div class="step-description">Casual chats about creek floods and proposals; each story becomes a thread.</div>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">3</div>
+          <div class="step-content">
+            <div class="step-title">Build an Artifact</div>
+            <div class="step-description">One photo & one minute of voice → lifelike portrait that answers in his words.</div>
+          </div>
+        </div>
+        
+        <div class="step">
+          <div class="step-number">4</div>
+          <div class="step-content">
+            <div class="step-title">Share on Your Terms</div>
+            <div class="step-description">Hologram at the memorial, private VR chats later, or keep it sealed.</div>
+          </div>
+        </div>
+      </div>
+      
+      <p style="text-align: center; font-size: 1.2rem; margin-top: 3rem; line-height: 1.8; color: rgba(240, 240, 240, 0.8);">
+        Nothing replaces grief, but Legacy Stack gives the family <em>a door you can open</em><br>
+        whenever you need to hear, <span style="color: #f093fb;">"It's going to be all right."</span>
+      </p>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-text">
+      <strong>Conference feeling → "Wow—history is alive."</strong>
+      <strong>Home feeling → "Dad will never be gone for good."</strong>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>

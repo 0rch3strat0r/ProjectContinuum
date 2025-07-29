@@ -1,0 +1,1428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - Death No Longer Ends The Conversation</title>
+<style>
+  * {box-sizing: border-box; margin: 0; padding: 0;}
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #000;
+    color: #fff;
+    overflow: hidden;
+    cursor: none;
+  }
+  
+  /* Custom cursor with trail */
+  .cursor {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    transition: all 0.1s ease;
+    z-index: 9999;
+    mix-blend-mode: difference;
+  }
+  
+  .cursor-follower {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 9998;
+  }
+  
+  .cursor.clicking {
+    transform: scale(0.8);
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  /* Particle system */
+  #particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: float-up 10s linear infinite;
+  }
+  
+  @keyframes float-up {
+    0% {
+      opacity: 0;
+      transform: translateY(100vh) scale(0);
+    }
+    10% {
+      opacity: 1;
+    }
+    90% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-100vh) scale(1.5);
+    }
+  }
+  
+  /* Sound button */
+  .sound-toggle {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+  }
+  
+  .sound-toggle:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+  }
+  
+  .sound-toggle.muted::after {
+    content: '🔇';
+    font-size: 1.5rem;
+  }
+  
+  .sound-toggle:not(.muted)::after {
+    content: '🔊';
+    font-size: 1.5rem;
+  }
+  
+  /* Video container */
+  .video-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Scenes */
+  .scene {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 1.5s ease-in-out, transform 1s ease-in-out;
+    transform: scale(0.9);
+  }
+  
+  .scene.active {
+    opacity: 1;
+    transform: scale(1);
+  }
+  
+  /* Scene 0: Personal Story */
+  .scene-0 {
+    background: radial-gradient(ellipse at center, #0a0a1a 0%, #000 100%);
+  }
+  
+  .story-container {
+    max-width: 900px;
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .story-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin: 0 auto 2rem;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(255, 255, 255, 0.1);
+  }
+  
+  .story-image::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, transparent 30%, rgba(0, 0, 0, 0.4) 70%);
+  }
+  
+  .story-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: sepia(0.3);
+  }
+  
+  .story-quote {
+    font-size: 2.5rem;
+    font-weight: 300;
+    line-height: 1.4;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 0.5s forwards;
+  }
+  
+  .story-context {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.6);
+    opacity: 0;
+    animation: fadeInUp 1s ease-out 1s forwards;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Scene 1: Logo with tagline */
+  .scene-1 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  }
+  
+  .logo-intro {
+    text-align: center;
+    position: relative;
+  }
+  
+  .logo-intro h1 {
+    font-size: 6rem;
+    font-weight: 200;
+    letter-spacing: -3px;
+    margin-bottom: 1rem;
+    position: relative;
+    display: inline-block;
+  }
+  
+  .logo-intro h1::before {
+    content: 'ContinuumOS';
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: glitch 2s ease-in-out infinite;
+  }
+  
+  @keyframes glitch {
+    0%, 100% { 
+      transform: translate(0);
+      opacity: 0.8;
+    }
+    20% {
+      transform: translate(-2px, 2px);
+      opacity: 0.6;
+    }
+    40% {
+      transform: translate(-2px, -2px);
+      opacity: 0.7;
+    }
+    60% {
+      transform: translate(2px, 2px);
+      opacity: 0.6;
+    }
+    80% {
+      transform: translate(2px, -2px);
+      opacity: 0.7;
+    }
+  }
+  
+  .tagline {
+    font-size: 1.8rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 2rem;
+    opacity: 0;
+    animation: fadeIn 1s ease-out 1s forwards;
+  }
+  
+  .patent-badge {
+    display: inline-block;
+    background: linear-gradient(45deg, #ffce00, #ff9a00);
+    color: #000;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    margin-top: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { 
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(255, 206, 0, 0.4);
+    }
+    50% { 
+      transform: scale(1.05);
+      box-shadow: 0 0 0 20px rgba(255, 206, 0, 0);
+    }
+  }
+  
+  /* Scene 2: Live Demo */
+  .scene-2 {
+    background: #000;
+  }
+  
+  .demo-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    max-width: 1400px;
+    width: 100%;
+    padding: 2rem;
+    align-items: center;
+  }
+  
+  .chat-interface {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .avatar-circle {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+  
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+  }
+  
+  .message {
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: messageAppear 0.5s ease-out forwards;
+  }
+  
+  @keyframes messageAppear {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .message.user {
+    text-align: right;
+  }
+  
+  .message-bubble {
+    display: inline-block;
+    padding: 1rem 1.5rem;
+    border-radius: 20px;
+    max-width: 80%;
+  }
+  
+  .message.user .message-bubble {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+  }
+  
+  .message.ai .message-bubble {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .typing-indicator {
+    display: inline-flex;
+    gap: 0.3rem;
+    padding: 1rem;
+  }
+  
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    animation: typing 1.4s ease-in-out infinite;
+  }
+  
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  
+  @keyframes typing {
+    0%, 60%, 100% { opacity: 0.3; }
+    30% { opacity: 1; }
+  }
+  
+  .demo-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  
+  .demo-info h2 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    background: linear-gradient(45deg, #fff, #667eea);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .feature-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .feature-badge {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+  
+  .feature-badge:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+  }
+  
+  /* Scene 3: Market Visualization */
+  .scene-3 {
+    background: radial-gradient(circle at center, #1a1a2e 0%, #000 50%);
+  }
+  
+  .market-container {
+    text-align: center;
+    max-width: 1200px;
+  }
+  
+  .market-title {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+  }
+  
+  .growth-chart {
+    position: relative;
+    width: 100%;
+    height: 400px;
+    margin: 3rem 0;
+  }
+  
+  .chart-line {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+  
+  .chart-bars {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+  }
+  
+  .chart-bar {
+    width: 15%;
+    background: linear-gradient(to top, #667eea, #f093fb);
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    opacity: 0;
+    animation: growBar 1s ease-out forwards;
+  }
+  
+  .chart-bar:nth-child(1) { height: 20%; animation-delay: 0.2s; }
+  .chart-bar:nth-child(2) { height: 35%; animation-delay: 0.4s; }
+  .chart-bar:nth-child(3) { height: 60%; animation-delay: 0.6s; }
+  .chart-bar:nth-child(4) { height: 85%; animation-delay: 0.8s; }
+  .chart-bar:nth-child(5) { height: 100%; animation-delay: 1s; }
+  
+  @keyframes growBar {
+    from {
+      transform: scaleY(0);
+      opacity: 0;
+    }
+    to {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+  }
+  
+  .chart-label {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 1.5rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  
+  .chart-year {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+  
+  .market-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .stat-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+  }
+  
+  .stat-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+  }
+  
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #667eea;
+  }
+  
+  .stat-label {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-top: 0.5rem;
+  }
+  
+  /* Scene 4: Tech & Security */
+  .scene-4 {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  }
+  
+  .tech-showcase {
+    max-width: 1200px;
+    text-align: center;
+  }
+  
+  .tech-showcase h2 {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+  }
+  
+  .tech-stack {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .tech-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .tech-item:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+  }
+  
+  .tech-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .security-badges {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+  
+  .security-badge {
+    width: 100px;
+    height: 100px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #000;
+    font-weight: 700;
+    transition: all 0.3s ease;
+  }
+  
+  .security-badge:hover {
+    transform: rotate(5deg) scale(1.1);
+  }
+  
+  /* Scene 5: Testimonials */
+  .scene-5 {
+    background: #000;
+  }
+  
+  .testimonial-container {
+    max-width: 1000px;
+    text-align: center;
+  }
+  
+  .testimonial {
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+  }
+  
+  .testimonial-quote {
+    font-size: 2rem;
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    color: #f093fb;
+  }
+  
+  .testimonial-author {
+    font-size: 1.2rem;
+    opacity: 0.8;
+  }
+  
+  .testimonial-rating {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+  
+  .star {
+    font-size: 1.5rem;
+    color: #ffce00;
+  }
+  
+  /* Scene 6: Call to Action */
+  .scene-6 {
+    background: radial-gradient(circle at center, #0a0a0a 0%, #000 50%);
+  }
+  
+  .cta-container {
+    text-align: center;
+    max-width: 900px;
+  }
+  
+  .cta-headline {
+    font-size: 4rem;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  .cta-subtitle {
+    font-size: 1.5rem;
+    opacity: 0.8;
+    margin-bottom: 3rem;
+  }
+  
+  .cta-buttons {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .cta-button {
+    padding: 1.5rem 3rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cta-button.primary {
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    color: white;
+  }
+  
+  .cta-button.secondary {
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+  }
+  
+  .cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 40px rgba(102, 126, 234, 0.4);
+  }
+  
+  .cta-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+  }
+  
+  .cta-button:hover::before {
+    width: 300px;
+    height: 300px;
+  }
+  
+  .calendar-widget {
+    margin-top: 3rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  
+  /* Navigation dots */
+  .nav-dots {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+  }
+  
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 1rem 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  
+  .dot.active {
+    background: white;
+    transform: scale(1.5);
+  }
+  
+  .dot:hover::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    white-space: nowrap;
+    font-size: 0.8rem;
+  }
+  
+  /* Interactive demo overlay */
+  .demo-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+  }
+  
+  .demo-overlay.active {
+    display: flex;
+  }
+  
+  .demo-modal {
+    background: #1a1a2e;
+    border-radius: 20px;
+    padding: 3rem;
+    max-width: 600px;
+    width: 90%;
+    position: relative;
+  }
+  
+  .demo-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .demo-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: rotate(90deg);
+  }
+  
+  /* ROI Calculator */
+  .roi-calculator {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .roi-input {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .roi-input label {
+    flex: 1;
+  }
+  
+  .roi-input input {
+    width: 150px;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .roi-result {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #4CAF50;
+    text-align: center;
+    margin-top: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .demo-split {
+      grid-template-columns: 1fr;
+    }
+    
+    .market-stats {
+      grid-template-columns: 1fr;
+    }
+    
+    .tech-stack {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    
+    h1 { font-size: 3rem; }
+    .cta-headline { font-size: 2.5rem; }
+  }
+  
+  /* Loading screen */
+  .loading-screen {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    transition: opacity 1s ease;
+  }
+  
+  .loading-screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .loading-spinner {
+    width: 100px;
+    height: 100px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
+<div id="particles"></div>
+
+<!-- Sound toggle -->
+<div class="sound-toggle muted"></div>
+
+<!-- Loading screen -->
+<div class="loading-screen">
+  <div class="loading-spinner"></div>
+</div>
+
+<div class="video-container">
+  <!-- Scene 0: Personal Story -->
+  <div class="scene scene-0" data-duration="8000">
+    <div class="story-container">
+      <div class="story-image">
+        <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea, #764ba2); display: flex; align-items: center; justify-content: center; font-size: 4rem;">👴</div>
+      </div>
+      <p class="story-quote">
+        "Sarah never met her grandfather who served in WWII.<br>
+        He died when her father was just 10 years old."
+      </p>
+      <p class="story-context">
+        Today, she's having her first conversation with him.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Scene 1: Logo Introduction -->
+  <div class="scene scene-1" data-duration="5000">
+    <div class="logo-intro">
+      <h1>ContinuumOS</h1>
+      <p class="tagline">Death No Longer Ends The Conversation</p>
+      <div class="patent-badge">PATENT PENDING</div>
+    </div>
+  </div>
+  
+  <!-- Scene 2: Live Demo -->
+  <div class="scene scene-2" data-duration="10000">
+    <div class="demo-split">
+      <div class="chat-interface">
+        <div class="chat-header">
+          <div class="avatar-circle">👴</div>
+          <div>
+            <h3>Grandpa William</h3>
+            <p style="opacity: 0.6; font-size: 0.9rem;">1920-1985 · WWII Veteran</p>
+          </div>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+          <!-- Messages will be dynamically added -->
+        </div>
+      </div>
+      <div class="demo-info">
+        <h2>Watch Sarah Meet Her Grandfather</h2>
+        <p style="font-size: 1.3rem; margin-bottom: 2rem; opacity: 0.8;">
+          Real conversation. Real memories. Real connection.
+        </p>
+        <div class="feature-badges">
+          <div class="feature-badge">Voice Cloned from 1970s Recording</div>
+          <div class="feature-badge">Trained on 200+ Family Letters</div>
+          <div class="feature-badge">Contextual WWII Knowledge</div>
+          <div class="feature-badge">Emotional Intelligence</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 3: Market Growth -->
+  <div class="scene scene-3" data-duration="8000">
+    <div class="market-container">
+      <h2 class="market-title">The Path to $150 Billion</h2>
+      <div class="growth-chart">
+        <div class="chart-line"></div>
+        <div class="chart-bars">
+          <div class="chart-bar">
+            <span class="chart-label">$1B</span>
+            <span class="chart-year">Year 2</span>
+          </div>
+          <div class="chart-bar">
+            <span class="chart-label">$5B</span>
+            <span class="chart-year">Year 5</span>
+          </div>
+          <div class="chart-bar">
+            <span class="chart-label">$10B</span>
+            <span class="chart-year">Year 7</span>
+          </div>
+          <div class="chart-bar">
+            <span class="chart-label">$50B</span>
+            <span class="chart-year">Year 10</span>
+          </div>
+          <div class="chart-bar">
+            <span class="chart-label">$150B</span>
+            <span class="chart-year">Year 15</span>
+          </div>
+        </div>
+      </div>
+      <div class="market-stats">
+        <div class="stat-card">
+          <div class="stat-value">171M</div>
+          <div class="stat-label">Global VR Users Today</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">73%</div>
+          <div class="stat-label">Americans with Life Insurance</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">0%</div>
+          <div class="stat-label">With Digital Legacy Plans</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 4: Tech & Security -->
+  <div class="scene scene-4" data-duration="7000">
+    <div class="tech-showcase">
+      <h2>Enterprise-Grade Technology</h2>
+      <div class="tech-stack">
+        <div class="tech-item">
+          <div class="tech-icon">🧠</div>
+          <h4>AI Memory Engine</h4>
+          <p>RAG + Vector DB</p>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🎙️</div>
+          <h4>Voice Synthesis</h4>
+          <p>Real-time cloning</p>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">👁️</div>
+          <h4>Vision Processing</h4>
+          <p>Photo to 3D avatar</p>
+        </div>
+        <div class="tech-item">
+          <div class="tech-icon">🔐</div>
+          <h4>Blockchain Consent</h4>
+          <p>Immutable permissions</p>
+        </div>
+      </div>
+      <div class="security-badges">
+        <div class="security-badge">SOC2</div>
+        <div class="security-badge">HIPAA</div>
+        <div class="security-badge">GDPR</div>
+        <div class="security-badge">ISO27001</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 5: Testimonials -->
+  <div class="scene scene-5" data-duration="6000">
+    <div class="testimonial-container">
+      <h2 style="font-size: 3rem; margin-bottom: 3rem;">Early Users Love ContinuumOS</h2>
+      <div class="testimonial">
+        <p class="testimonial-quote">"My kids finally met their great-grandmother. She told them stories I'd never even heard. It's like she's still with us."</p>
+        <p class="testimonial-author">- Maria S., Beta User</p>
+        <div class="testimonial-rating">
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+          <span class="star">⭐</span>
+        </div>
+      </div>
+      <div class="testimonial" style="animation-delay: 1s;">
+        <p class="testimonial-quote">"We're using this for employee onboarding. New hires can literally talk to our founder about company values."</p>
+        <p class="testimonial-author">- Tech Fortune 500 HR Director</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 6: Call to Action -->
+  <div class="scene scene-6" data-duration="15000">
+    <div class="cta-container">
+      <h2 class="cta-headline">Join Us in Building<br>Humanity's Permanent Memory</h2>
+      <p class="cta-subtitle">The future where no story is ever lost starts now.</p>
+      
+      <div class="cta-buttons">
+        <a href="#" class="cta-button primary" onclick="showDemo()">Schedule Live Demo</a>
+        <a href="#" class="cta-button secondary" onclick="showROI()">Calculate Your ROI</a>
+      </div>
+      
+      <div class="calendar-widget">
+        <p style="margin-bottom: 1rem;">Next available demo slots:</p>
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+          <div class="feature-badge" style="cursor: pointer;">Tomorrow 2:00 PM</div>
+          <div class="feature-badge" style="cursor: pointer;">Thursday 10:00 AM</div>
+          <div class="feature-badge" style="cursor: pointer;">Friday 3:00 PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-bar">
+  <div class="progress-fill"></div>
+</div>
+
+<!-- Navigation Dots -->
+<div class="nav-dots">
+  <div class="dot active" data-scene="0" data-label="Sarah's Story"></div>
+  <div class="dot" data-scene="1" data-label="Introduction"></div>
+  <div class="dot" data-scene="2" data-label="Live Demo"></div>
+  <div class="dot" data-scene="3" data-label="Market Opportunity"></div>
+  <div class="dot" data-scene="4" data-label="Technology"></div>
+  <div class="dot" data-scene="5" data-label="Testimonials"></div>
+  <div class="dot" data-scene="6" data-label="Get Started"></div>
+</div>
+
+<!-- Demo Overlay -->
+<div class="demo-overlay" id="demoOverlay">
+  <div class="demo-modal">
+    <button class="demo-close" onclick="closeDemo()">×</button>
+    <h3 style="font-size: 2rem; margin-bottom: 1.5rem;">Experience ContinuumOS Live</h3>
+    <p style="margin-bottom: 2rem;">Choose your demo experience:</p>
+    <div style="display: grid; gap: 1rem;">
+      <button class="cta-button primary" style="width: 100%;">Family Legacy Demo</button>
+      <button class="cta-button primary" style="width: 100%;">Enterprise Training Demo</button>
+      <button class="cta-button primary" style="width: 100%;">Educational History Demo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ROI Calculator Overlay -->
+<div class="demo-overlay" id="roiOverlay">
+  <div class="demo-modal">
+    <button class="demo-close" onclick="closeROI()">×</button>
+    <h3 style="font-size: 2rem; margin-bottom: 1.5rem;">ROI Calculator</h3>
+    <div class="roi-calculator">
+      <div class="roi-input">
+        <label>Number of Employees:</label>
+        <input type="number" id="employees" value="1000" onchange="calculateROI()">
+      </div>
+      <div class="roi-input">
+        <label>Average Training Hours/Year:</label>
+        <input type="number" id="trainingHours" value="40" onchange="calculateROI()">
+      </div>
+      <div class="roi-input">
+        <label>Cost per Training Hour:</label>
+        <input type="number" id="costPerHour" value="50" onchange="calculateROI()">
+      </div>
+      <div class="roi-result" id="roiResult">
+        Annual Savings: $0
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Enhanced cursor
+  const cursor = document.querySelector('.cursor');
+  const follower = document.querySelector('.cursor-follower');
+  let mouseX = 0, mouseY = 0;
+  let cursorX = 0, cursorY = 0;
+  let followerX = 0, followerY = 0;
+  
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+  });
+  
+  // Smooth cursor animation
+  function animateCursor() {
+    cursorX += (mouseX - cursorX) * 0.2;
+    cursorY += (mouseY - cursorY) * 0.2;
+    cursor.style.left = cursorX - 10 + 'px';
+    cursor.style.top = cursorY - 10 + 'px';
+    
+    followerX += (mouseX - followerX) * 0.1;
+    followerY += (mouseY - followerY) * 0.1;
+    follower.style.left = followerX - 20 + 'px';
+    follower.style.top = followerY - 20 + 'px';
+    
+    requestAnimationFrame(animateCursor);
+  }
+  animateCursor();
+  
+  document.addEventListener('mousedown', () => cursor.classList.add('clicking'));
+  document.addEventListener('mouseup', () => cursor.classList.remove('clicking'));
+  
+  // Particle system
+  function createParticle() {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    particle.style.left = Math.random() * window.innerWidth + 'px';
+    particle.style.animationDelay = Math.random() * 10 + 's';
+    particle.style.animationDuration = (10 + Math.random() * 10) + 's';
+    document.getElementById('particles').appendChild(particle);
+    
+    setTimeout(() => particle.remove(), 20000);
+  }
+  
+  // Create initial particles
+  for (let i = 0; i < 50; i++) {
+    setTimeout(createParticle, i * 200);
+  }
+  setInterval(createParticle, 500);
+  
+  // Scene management
+  const scenes = document.querySelectorAll('.scene');
+  const dots = document.querySelectorAll('.dot');
+  const progressFill = document.querySelector('.progress-fill');
+  let currentScene = 0;
+  let isTransitioning = false;
+  let presentationTimer;
+  
+  function showScene(index) {
+    if (isTransitioning || index === currentScene) return;
+    isTransitioning = true;
+    
+    // Clear auto-advance timer
+    clearTimeout(presentationTimer);
+    
+    // Hide current scene
+    scenes[currentScene].classList.remove('active');
+    dots[currentScene].classList.remove('active');
+    
+    // Show new scene
+    setTimeout(() => {
+      scenes[index].classList.add('active');
+      dots[index].classList.add('active');
+      currentScene = index;
+      
+      // Update progress bar
+      const progress = ((index + 1) / scenes.length) * 100;
+      progressFill.style.width = progress + '%';
+      
+      isTransitioning = false;
+      
+      // Trigger scene-specific animations
+      if (index === 2) startChatAnimation();
+      if (index === 3) animateMarketGrowth();
+      
+      // Auto-advance to next scene
+      const duration = parseInt(scenes[index].dataset.duration) || 5000;
+      if (index < scenes.length - 1) {
+        presentationTimer = setTimeout(() => showScene(index + 1), duration);
+      }
+    }, 500);
+  }
+  
+  // Chat animation for demo scene
+  const chatMessages = [
+    { type: 'user', text: 'Grandpa, what was it like serving in WWII?', delay: 1000 },
+    { type: 'ai', text: 'Oh Sarah, I was just a young man, not much older than you are now...', delay: 3000 },
+    { type: 'user', text: 'Were you scared?', delay: 5000 },
+    { type: 'ai', text: 'Every day. But we had each other, and we believed in what we were fighting for. Your grandmother\'s letters kept me going.', delay: 7000 }
+  ];
+  
+  function startChatAnimation() {
+    const chatContainer = document.getElementById('chat-messages');
+    chatContainer.innerHTML = '';
+    
+    chatMessages.forEach(msg => {
+      setTimeout(() => {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${msg.type}`;
+        messageDiv.innerHTML = `
+          <div class="message-bubble">
+            ${msg.type === 'ai' ? '<div class="typing-indicator"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>' : msg.text}
+          </div>
+        `;
+        chatContainer.appendChild(messageDiv);
+        
+        if (msg.type === 'ai') {
+          setTimeout(() => {
+            messageDiv.querySelector('.message-bubble').innerHTML = msg.text;
+          }, 1500);
+        }
+        
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }, msg.delay);
+    });
+  }
+  
+  // Market growth animation
+  function animateMarketGrowth() {
+    const bars = document.querySelectorAll('.chart-bar');
+    bars.forEach((bar, i) => {
+      bar.style.animation = 'none';
+      setTimeout(() => {
+        bar.style.animation = `growBar 1s ease-out forwards`;
+      }, i * 200);
+    });
+  }
+  
+  // Navigation
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => showScene(index));
+  });
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && currentScene < scenes.length - 1) {
+      showScene(currentScene + 1);
+    } else if (e.key === 'ArrowLeft' && currentScene > 0) {
+      showScene(currentScene - 1);
+    } else if (e.key === ' ') {
+      e.preventDefault();
+      if (currentScene < scenes.length - 1) {
+        showScene(currentScene + 1);
+      } else {
+        showScene(0); // Loop back to start
+      }
+    }
+  });
+  
+  // Sound toggle
+  const soundToggle = document.querySelector('.sound-toggle');
+  let audioContext;
+  let oscillator;
+  
+  soundToggle.addEventListener('click', () => {
+    soundToggle.classList.toggle('muted');
+    if (!soundToggle.classList.contains('muted')) {
+      // Create ambient sound
+      if (!audioContext) {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        oscillator.frequency.value = 440;
+        gainNode.gain.value = 0.05;
+        oscillator.start();
+      }
+    } else if (audioContext) {
+      audioContext.close();
+      audioContext = null;
+    }
+  });
+  
+  // Demo overlay functions
+  function showDemo() {
+    document.getElementById('demoOverlay').classList.add('active');
+  }
+  
+  function closeDemo() {
+    document.getElementById('demoOverlay').classList.remove('active');
+  }
+  
+  function showROI() {
+    document.getElementById('roiOverlay').classList.add('active');
+    calculateROI();
+  }
+  
+  function closeROI() {
+    document.getElementById('roiOverlay').classList.remove('active');
+  }
+  
+  // ROI Calculator
+  function calculateROI() {
+    const employees = parseInt(document.getElementById('employees').value) || 0;
+    const trainingHours = parseInt(document.getElementById('trainingHours').value) || 0;
+    const costPerHour = parseInt(document.getElementById('costPerHour').value) || 0;
+    
+    const currentCost = employees * trainingHours * costPerHour;
+    const savings = currentCost * 0.7; // 70% cost reduction with VR
+    
+    document.getElementById('roiResult').innerHTML = `
+      Annual Savings: <span style="color: #4CAF50;">$${savings.toLocaleString()}</span><br>
+      <small style="opacity: 0.7;">ROI: ${Math.round((savings / (employees * 150)) * 100)}%</small>
+    `;
+  }
+  
+  // Loading screen
+  setTimeout(() => {
+    document.querySelector('.loading-screen').classList.add('hidden');
+    showScene(0);
+  }, 2000);
+  
+  // Interactive elements hover effect
+  document.querySelectorAll('.cta-button, .feature-badge, .tech-item, .stat-card').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'scale(1.5)';
+      follower.style.transform = 'scale(1.5)';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'scale(1)';
+      follower.style.transform = 'scale(1)';
+    });
+  });
+</script>
+
+</body>
+</html>

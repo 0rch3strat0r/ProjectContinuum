@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - The Future of Human Legacy</title>
+<style>
+  * {box-sizing: border-box; margin: 0; padding: 0;}
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #000;
+    color: #fff;
+    overflow: hidden;
+    cursor: none;
+  }
+  
+  /* Custom cursor */
+  .cursor {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    transition: all 0.1s ease;
+    z-index: 9999;
+    mix-blend-mode: difference;
+  }
+  
+  .cursor-follower {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    position: fixed;
+    pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 9998;
+  }
+  
+  /* Video container */
+  .video-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(ellipse at center, #0a0a0a 0%, #000 100%);
+  }
+  
+  /* Scenes */
+  .scene {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+  }
+  
+  .scene.active {
+    opacity: 1;
+  }
+  
+  /* Scene 1: Opening */
+  .scene-1 {
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 100%);
+  }
+  
+  .logo-intro {
+    text-align: center;
+    animation: logoReveal 2s ease-out;
+  }
+  
+  @keyframes logoReveal {
+    0% {
+      transform: scale(0.8) rotateX(90deg);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.1) rotateX(0);
+    }
+    100% {
+      transform: scale(1) rotateX(0);
+      opacity: 1;
+    }
+  }
+  
+  .logo-intro h1 {
+    font-size: 5rem;
+    font-weight: 200;
+    letter-spacing: -2px;
+    margin-bottom: 1rem;
+    background: linear-gradient(45deg, #fff, #667eea, #fff);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 3s ease-in-out infinite;
+  }
+  
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  .tagline {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.6);
+    animation: fadeInUp 1s ease-out 0.5s;
+    animation-fill-mode: both;
+  }
+  
+  /* Scene 2: Problem */
+  .scene-2 {
+    background: #000;
+    flex-direction: column;
+  }
+  
+  .problem-text {
+    max-width: 800px;
+    text-align: center;
+    padding: 2rem;
+  }
+  
+  .stat-number {
+    font-size: 8rem;
+    font-weight: 700;
+    color: #ff6b6b;
+    display: block;
+    animation: countUp 2s ease-out;
+  }
+  
+  .stat-description {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-top: 1rem;
+  }
+  
+  /* Scene 3: Solution */
+  .scene-3 {
+    background: radial-gradient(circle at center, #1a1a2e 0%, #000 50%);
+  }
+  
+  .solution-showcase {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    max-width: 1200px;
+    align-items: center;
+  }
+  
+  .device-mockup {
+    position: relative;
+    width: 400px;
+    height: 600px;
+    background: #222;
+    border-radius: 40px;
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0) rotateY(-5deg); }
+    50% { transform: translateY(-20px) rotateY(5deg); }
+  }
+  
+  .device-screen {
+    position: absolute;
+    inset: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  
+  .avatar-preview {
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.6));
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(255, 255, 255, 0); }
+  }
+  
+  .solution-text h2 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    font-weight: 300;
+  }
+  
+  .feature-list {
+    list-style: none;
+  }
+  
+  .feature-list li {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    padding-left: 2rem;
+    position: relative;
+    opacity: 0;
+    animation: slideInLeft 0.6s ease-out forwards;
+  }
+  
+  .feature-list li:nth-child(1) { animation-delay: 0.2s; }
+  .feature-list li:nth-child(2) { animation-delay: 0.4s; }
+  .feature-list li:nth-child(3) { animation-delay: 0.6s; }
+  .feature-list li:nth-child(4) { animation-delay: 0.8s; }
+  
+  @keyframes slideInLeft {
+    from { opacity: 0; transform: translateX(-50px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  
+  .feature-list li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #4CAF50;
+    font-weight: bold;
+  }
+  
+  /* Scene 4: Demo */
+  .scene-4 {
+    background: #0a0a0a;
+  }
+  
+  .demo-container {
+    position: relative;
+    width: 90%;
+    max-width: 1400px;
+  }
+  
+  .demo-screens {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+  
+  .demo-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    transform: translateY(50px);
+    opacity: 0;
+    animation: demoReveal 0.8s ease-out forwards;
+  }
+  
+  .demo-card:nth-child(1) { animation-delay: 0.2s; }
+  .demo-card:nth-child(2) { animation-delay: 0.4s; }
+  .demo-card:nth-child(3) { animation-delay: 0.6s; }
+  
+  @keyframes demoReveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .demo-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+  
+  .demo-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: #667eea;
+  }
+  
+  /* Scene 5: Market */
+  .scene-5 {
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+  }
+  
+  .market-visualization {
+    text-align: center;
+    max-width: 1000px;
+  }
+  
+  .market-title {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+  }
+  
+  .market-circles {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .market-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    animation: marketGrow 1s ease-out forwards;
+    opacity: 0;
+  }
+  
+  .market-circle:nth-child(1) {
+    background: radial-gradient(circle, #667eea, #5a4fcf);
+    animation-delay: 0.2s;
+  }
+  
+  .market-circle:nth-child(2) {
+    background: radial-gradient(circle, #764ba2, #663399);
+    animation-delay: 0.4s;
+  }
+  
+  .market-circle:nth-child(3) {
+    background: radial-gradient(circle, #f093fb, #e872fb);
+    animation-delay: 0.6s;
+  }
+  
+  @keyframes marketGrow {
+    from {
+      transform: scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  
+  .market-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+  
+  .market-label {
+    font-size: 1rem;
+    opacity: 0.8;
+  }
+  
+  /* Scene 6: Vision */
+  .scene-6 {
+    background: #000;
+  }
+  
+  .vision-statement {
+    text-align: center;
+    max-width: 900px;
+  }
+  
+  .vision-text {
+    font-size: 3rem;
+    line-height: 1.4;
+    font-weight: 300;
+    margin-bottom: 3rem;
+  }
+  
+  .vision-text span {
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+  
+  .cta-button {
+    display: inline-block;
+    padding: 1.5rem 3rem;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    border-radius: 50px;
+    text-decoration: none;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    animation: ctaPulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes ctaPulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4); }
+    50% { box-shadow: 0 0 0 30px rgba(102, 126, 234, 0); }
+  }
+  
+  .cta-button:hover {
+    transform: scale(1.05);
+  }
+  
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 1000;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  
+  /* Navigation dots */
+  .nav-dots {
+    position: fixed;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+  }
+  
+  .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    margin: 1rem 0;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .dot.active {
+    background: white;
+    transform: scale(1.5);
+  }
+  
+  /* Skip button */
+  .skip-button {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 0.8rem 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 25px;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+  
+  .skip-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+  
+  @media (max-width: 768px) {
+    .solution-showcase {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    
+    .demo-screens {
+      grid-template-columns: 1fr;
+    }
+    
+    .market-circles {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    h1 { font-size: 3rem; }
+    .vision-text { font-size: 2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor"></div>
+<div class="cursor-follower"></div>
+
+<div class="video-container">
+  <!-- Scene 1: Opening -->
+  <div class="scene scene-1 active" data-duration="5000">
+    <div class="logo-intro">
+      <h1>ContinuumOS</h1>
+      <p class="tagline">Every Story Lives Forever</p>
+    </div>
+  </div>
+  
+  <!-- Scene 2: The Problem -->
+  <div class="scene scene-2" data-duration="6000">
+    <div class="problem-text">
+      <span class="stat-number">73M</span>
+      <p class="stat-description">memories lost forever each year</p>
+      <p style="margin-top: 2rem; font-size: 1.3rem; opacity: 0.7;">
+        Every day, irreplaceable stories, wisdom, and connections vanish.<br>
+        Until now.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Scene 3: The Solution -->
+  <div class="scene scene-3" data-duration="8000">
+    <div class="solution-showcase">
+      <div class="device-mockup">
+        <div class="device-screen">
+          <div class="avatar-preview"></div>
+        </div>
+      </div>
+      <div class="solution-text">
+        <h2>Transform memories into<br>living conversations</h2>
+        <ul class="feature-list">
+          <li>Upload photos, voice, journals</li>
+          <li>AI creates interactive personas</li>
+          <li>Talk naturally in VR, AR, or hologram</li>
+          <li>Memories grow with each generation</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 4: Demo -->
+  <div class="scene scene-4" data-duration="7000">
+    <div class="demo-container">
+      <h2 style="text-align: center; font-size: 3rem; margin-bottom: 3rem;">One Platform, Infinite Applications</h2>
+      <div class="demo-screens">
+        <div class="demo-card">
+          <div class="demo-icon">👨‍👩‍👧‍👦</div>
+          <h3 class="demo-title">Family Legacy</h3>
+          <p>Children meet great-grandparents. Wisdom passes through generations.</p>
+        </div>
+        <div class="demo-card">
+          <div class="demo-icon">🎓</div>
+          <h3 class="demo-title">Education</h3>
+          <p>Students interview historical figures. History comes alive in classrooms.</p>
+        </div>
+        <div class="demo-card">
+          <div class="demo-icon">🏛️</div>
+          <h3 class="demo-title">Enterprise</h3>
+          <p>Preserve founder stories. Transform onboarding. Immortalize expertise.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 5: Market Opportunity -->
+  <div class="scene scene-5" data-duration="6000">
+    <div class="market-visualization">
+      <h2 class="market-title">The Opportunity</h2>
+      <div class="market-circles">
+        <div class="market-circle">
+          <div class="market-value">$10B</div>
+          <div class="market-label">Genealogy Market</div>
+        </div>
+        <div class="market-circle">
+          <div class="market-value">$36B</div>
+          <div class="market-label">EdTech Market</div>
+        </div>
+        <div class="market-circle">
+          <div class="market-value">$150B</div>
+          <div class="market-label">Total Potential</div>
+        </div>
+      </div>
+      <p style="font-size: 1.5rem; opacity: 0.8;">When digital estate planning becomes standard</p>
+    </div>
+  </div>
+  
+  <!-- Scene 6: Call to Action -->
+  <div class="scene scene-6" data-duration="10000">
+    <div class="vision-statement">
+      <p class="vision-text">
+        We're not building a product.<br>
+        We're building <span>humanity's permanent memory.</span>
+      </p>
+      <a href="#" class="cta-button">Let's Change the World Together</a>
+    </div>
+  </div>
+</div>
+
+<!-- Progress Bar -->
+<div class="progress-bar">
+  <div class="progress-fill"></div>
+</div>
+
+<!-- Navigation Dots -->
+<div class="nav-dots">
+  <div class="dot active" data-scene="1"></div>
+  <div class="dot" data-scene="2"></div>
+  <div class="dot" data-scene="3"></div>
+  <div class="dot" data-scene="4"></div>
+  <div class="dot" data-scene="5"></div>
+  <div class="dot" data-scene="6"></div>
+</div>
+
+<!-- Skip Button -->
+<a href="#" class="skip-button">Skip to End</a>
+
+<script>
+  // Custom cursor
+  const cursor = document.querySelector('.cursor');
+  const follower = document.querySelector('.cursor-follower');
+  
+  document.addEventListener('mousemove', (e) => {
+    cursor.style.left = e.clientX - 10 + 'px';
+    cursor.style.top = e.clientY - 10 + 'px';
+    
+    setTimeout(() => {
+      follower.style.left = e.clientX - 20 + 'px';
+      follower.style.top = e.clientY - 20 + 'px';
+    }, 100);
+  });
+  
+  // Scene management
+  const scenes = document.querySelectorAll('.scene');
+  const dots = document.querySelectorAll('.dot');
+  const progressFill = document.querySelector('.progress-fill');
+  let currentScene = 0;
+  let isTransitioning = false;
+  
+  function showScene(index) {
+    if (isTransitioning) return;
+    isTransitioning = true;
+    
+    // Hide all scenes
+    scenes.forEach((scene, i) => {
+      scene.classList.remove('active');
+      dots[i].classList.remove('active');
+    });
+    
+    // Show current scene
+    setTimeout(() => {
+      scenes[index].classList.add('active');
+      dots[index].classList.add('active');
+      currentScene = index;
+      
+      // Update progress bar
+      const progress = ((index + 1) / scenes.length) * 100;
+      progressFill.style.width = progress + '%';
+      
+      isTransitioning = false;
+    }, 500);
+  }
+  
+  // Auto-advance scenes
+  function startPresentation() {
+    let totalDuration = 0;
+    
+    scenes.forEach((scene, index) => {
+      const duration = parseInt(scene.dataset.duration) || 5000;
+      
+      setTimeout(() => {
+        if (index < scenes.length - 1) {
+          showScene(index + 1);
+        }
+      }, totalDuration);
+      
+      totalDuration += duration;
+    });
+  }
+  
+  // Navigation
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => {
+      showScene(index);
+    });
+  });
+  
+  // Skip button
+  document.querySelector('.skip-button').addEventListener('click', (e) => {
+    e.preventDefault();
+    showScene(scenes.length - 1);
+  });
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && currentScene < scenes.length - 1) {
+      showScene(currentScene + 1);
+    } else if (e.key === 'ArrowLeft' && currentScene > 0) {
+      showScene(currentScene - 1);
+    } else if (e.key === ' ') {
+      e.preventDefault();
+      if (currentScene < scenes.length - 1) {
+        showScene(currentScene + 1);
+      }
+    }
+  });
+  
+  // Start the presentation
+  setTimeout(startPresentation, 1000);
+  
+  // Animate numbers
+  function animateNumber(element, target, duration = 2000) {
+    const start = 0;
+    const increment = target / (duration / 16);
+    let current = start;
+    
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        current = target;
+        clearInterval(timer);
+      }
+      element.textContent = Math.floor(current) + 'M';
+    }, 16);
+  }
+  
+  // Trigger number animation when scene 2 is shown
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && entry.target.classList.contains('scene-2')) {
+        const statNumber = entry.target.querySelector('.stat-number');
+        animateNumber(statNumber, 73);
+      }
+    });
+  });
+  
+  scenes.forEach(scene => observer.observe(scene));
+</script>
+
+</body>
+</html>

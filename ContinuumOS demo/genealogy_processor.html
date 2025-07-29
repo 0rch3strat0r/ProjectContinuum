@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - Genealogy Data Processor</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+    background: #0a0a1a;
+    color: #e0e0e0;
+    padding: 2rem;
+    line-height: 1.6;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  h1 {
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+  }
+  
+  .processor-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .panel {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+  }
+  
+  .panel h2 {
+    color: #f093fb;
+    margin-bottom: 1.5rem;
+  }
+  
+  .upload-area {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed #667eea;
+    border-radius: 15px;
+    padding: 3rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .upload-area:hover {
+    background: rgba(102, 126, 234, 0.1);
+  }
+  
+  .upload-area.dragover {
+    background: rgba(102, 126, 234, 0.2);
+    border-color: #f093fb;
+  }
+  
+  textarea {
+    width: 100%;
+    min-height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: white;
+    padding: 1rem;
+    font-family: monospace;
+    resize: vertical;
+  }
+  
+  button {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  }
+  
+  .person-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .person-card h3 {
+    color: #667eea;
+    margin-bottom: 0.5rem;
+  }
+  
+  .info-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .label {
+    color: #888;
+  }
+  
+  .sample-format {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-family: monospace;
+    font-size: 0.85rem;
+  }
+  
+  .status-message {
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid #4caf50;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 1rem;
+    display: none;
+  }
+  
+  .status-message.show {
+    display: block;
+  }
+  
+  @media (max-width: 768px) {
+    .processor-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Genealogy Data Processor</h1>
+  <p style="text-align: center; color: #888;">Transform your family history into interactive ancestors</p>
+  
+  <div class="processor-grid">
+    <!-- Input Panel -->
+    <div class="panel">
+      <h2>Input Your Genealogy Data</h2>
+      
+      <div class="upload-area" id="upload-area" ondrop="handleDrop(event)" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)">
+        <p style="font-size: 2rem; margin-bottom: 1rem;">📁</p>
+        <p>Drag & drop your genealogy file here</p>
+        <p style="font-size: 0.85rem; color: #888;">or click to browse</p>
+        <input type="file" id="file-input" style="display: none;" onchange="handleFileSelect(event)" accept=".txt,.ged,.json,.csv">
+      </div>
+      
+      <p style="margin: 1rem 0; text-align: center;">— OR —</p>
+      
+      <textarea id="text-input" placeholder="Paste your genealogy data here...
+
+Example format:
+Name: John Smith
+Born: 1925 in Ohio
+Died: 1995 in California
+Occupation: Carpenter, WWII Veteran
+Spouse: Mary Johnson (1928-2003)
+Children: Robert (1950), Susan (1952)
+Notes: Loved fishing, built furniture, told great stories"></textarea>
+      
+      <button onclick="processTextInput()">Process Text Data</button>
+      
+      <div class="sample-format">
+        <strong>Supported Formats:</strong><br>
+        • GEDCOM (.ged)<br>
+        • Plain text with structure<br>
+        • JSON family data<br>
+        • CSV with headers
+      </div>
+    </div>
+    
+    <!-- Output Panel -->
+    <div class="panel">
+      <h2>Extracted Ancestors</h2>
+      
+      <div id="ancestor-list">
+        <p style="color: #888; text-align: center;">No data processed yet. Upload or paste your genealogy data.</p>
+      </div>
+      
+      <div class="status-message" id="status"></div>
+      
+      <button id="create-artifacts-btn" style="display: none;" onclick="createArtifacts()">
+        Create Interactive Artifacts
+      </button>
+    </div>
+  </div>
+  
+  <!-- Instructions -->
+  <div class="panel" style="margin-top: 2rem;">
+    <h2>How to Format Your Data</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+      <div>
+        <h3 style="color: #667eea;">Simple Text Format</h3>
+        <pre style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 10px; overflow-x: auto;">
+Name: Margaret O'Brien
+Born: March 15, 1890 in Dublin, Ireland
+Died: December 3, 1975 in Boston, MA
+Parents: Patrick O'Brien, Mary Kelly
+Spouse: Thomas Sullivan (1888-1960)
+Children: John (1915), Patricia (1918)
+Occupation: Nurse, Midwife
+Stories: Immigrated 1910, delivered 100+ babies
+Personality: Strong-willed, caring, devoted</pre>
+      </div>
+      
+      <div>
+        <h3 style="color: #667eea;">JSON Format</h3>
+        <pre style="background: rgba(255, 255, 255, 0.05); padding: 1rem; border-radius: 10px; overflow-x: auto;">
+{
+  "name": "Margaret O'Brien",
+  "birth": { "date": "1890-03-15", "place": "Dublin" },
+  "death": { "date": "1975-12-03", "place": "Boston" },
+  "spouse": "Thomas Sullivan",
+  "children": ["John Sullivan", "Patricia Sullivan"],
+  "occupation": ["Nurse", "Midwife"],
+  "memories": ["Immigrated 1910", "Strong-willed"]
+}</pre>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Sample data for testing
+const sampleGenealogy = `
+Name: William Anderson
+Born: June 12, 1888 in Scotland
+Died: November 5, 1968 in Pennsylvania
+Occupation: Coal Miner, Union Organizer
+Spouse: Elizabeth MacLeod (1890-1972)
+Children: James (1912), Margaret (1915), Robert (1918)
+Stories: Immigrated to US in 1905, organized first miners strike in 1920, loved playing fiddle
+Personality: Determined, musical, fighter for workers rights
+
+Name: Elizabeth MacLeod Anderson
+Born: September 3, 1890 in Glasgow, Scotland
+Died: February 14, 1972 in Pennsylvania
+Occupation: Seamstress, Homemaker
+Parents: Donald MacLeod, Flora Campbell
+Children: James (1912), Margaret (1915), Robert (1918)
+Stories: Made all the family clothes, famous for shortbread, kept Scottish traditions alive
+Personality: Practical, loving, keeper of traditions
+`;
+
+let extractedPeople = [];
+
+// File handling
+document.getElementById('upload-area').addEventListener('click', () => {
+  document.getElementById('file-input').click();
+});
+
+function handleDrop(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  document.getElementById('upload-area').classList.remove('dragover');
+  
+  const files = e.dataTransfer.files;
+  if (files.length > 0) {
+    handleFile(files[0]);
+  }
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  document.getElementById('upload-area').classList.add('dragover');
+}
+
+function handleDragLeave(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  document.getElementById('upload-area').classList.remove('dragover');
+}
+
+function handleFileSelect(e) {
+  const files = e.target.files;
+  if (files.length > 0) {
+    handleFile(files[0]);
+  }
+}
+
+function handleFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const content = e.target.result;
+    document.getElementById('text-input').value = content;
+    processTextInput();
+  };
+  reader.readAsText(file);
+  
+  showStatus(`Processing ${file.name}...`);
+}
+
+function processTextInput() {
+  const input = document.getElementById('text-input').value;
+  if (!input.trim()) {
+    showStatus('Please enter some genealogy data', 'error');
+    return;
+  }
+  
+  // Parse the data
+  extractedPeople = parseGenealogy(input);
+  
+  if (extractedPeople.length > 0) {
+    displayExtractedPeople();
+    showStatus(`Found ${extractedPeople.length} ancestors!`, 'success');
+    document.getElementById('create-artifacts-btn').style.display = 'block';
+  } else {
+    showStatus('Could not parse data. Check format and try again.', 'error');
+  }
+}
+
+function parseGenealogy(text) {
+  const people = [];
+  
+  // Try JSON first
+  try {
+    const json = JSON.parse(text);
+    if (Array.isArray(json)) {
+      return json;
+    } else if (json.name) {
+      return [json];
+    }
+  } catch (e) {
+    // Not JSON, continue with text parsing
+  }
+  
+  // Parse text format
+  const entries = text.split(/\n\n+/);
+  
+  for (const entry of entries) {
+    if (!entry.trim()) continue;
+    
+    const person = {};
+    const lines = entry.split('\n');
+    
+    for (const line of lines) {
+      const [key, ...valueParts] = line.split(':');
+      if (!key || valueParts.length === 0) continue;
+      
+      const value = valueParts.join(':').trim();
+      const keyLower = key.toLowerCase().trim();
+      
+      if (keyLower === 'name') person.name = value;
+      else if (keyLower === 'born') person.birth = value;
+      else if (keyLower === 'died') person.death = value;
+      else if (keyLower === 'occupation') person.occupation = value;
+      else if (keyLower === 'spouse') person.spouse = value;
+      else if (keyLower === 'children') person.children = value;
+      else if (keyLower === 'stories' || keyLower === 'notes') person.stories = value;
+      else if (keyLower === 'personality') person.personality = value;
+      else if (keyLower === 'parents') person.parents = value;
+    }
+    
+    if (person.name) {
+      people.push(person);
+    }
+  }
+  
+  return people;
+}
+
+function displayExtractedPeople() {
+  const ancestorList = document.getElementById('ancestor-list');
+  
+  ancestorList.innerHTML = extractedPeople.map((person, index) => `
+    <div class="person-card">
+      <h3>${person.name || 'Unknown'}</h3>
+      <div class="info-grid">
+        ${person.birth ? `<span class="label">Born:</span><span>${person.birth}</span>` : ''}
+        ${person.death ? `<span class="label">Died:</span><span>${person.death}</span>` : ''}
+        ${person.occupation ? `<span class="label">Occupation:</span><span>${person.occupation}</span>` : ''}
+        ${person.spouse ? `<span class="label">Spouse:</span><span>${person.spouse}</span>` : ''}
+        ${person.children ? `<span class="label">Children:</span><span>${person.children}</span>` : ''}
+        ${person.stories ? `<span class="label">Stories:</span><span>${person.stories}</span>` : ''}
+        ${person.personality ? `<span class="label">Personality:</span><span>${person.personality}</span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+function createArtifacts() {
+  showStatus('Creating interactive artifacts...', 'processing');
+  
+  // Simulate processing
+  setTimeout(() => {
+    // In real app, this would:
+    // 1. Generate embeddings for each person
+    // 2. Create personality profiles
+    // 3. Set up conversation templates
+    // 4. Store in database
+    
+    // For demo, create downloadable artifact file
+    const artifactData = {
+      version: '1.0',
+      created: new Date().toISOString(),
+      ancestors: extractedPeople.map(person => ({
+        id: person.name.toLowerCase().replace(/\s+/g, '-'),
+        ...person,
+        artifact: {
+          personality: person.personality || 'Kind, thoughtful',
+          speechPattern: 'Period-appropriate',
+          knowledge: [person.stories, person.occupation].filter(Boolean),
+          relationships: {
+            spouse: person.spouse,
+            children: person.children,
+            parents: person.parents
+          }
+        }
+      }))
+    };
+    
+    // Create download
+    const dataStr = JSON.stringify(artifactData, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'continuum_artifacts.json';
+    link.click();
+    
+    showStatus('✅ Artifacts created! Check your downloads.', 'success');
+  }, 2000);
+}
+
+function showStatus(message, type = 'info') {
+  const status = document.getElementById('status');
+  status.textContent = message;
+  status.className = 'status-message show';
+  
+  if (type === 'error') {
+    status.style.borderColor = '#ff6b6b';
+    status.style.background = 'rgba(255, 67, 54, 0.2)';
+  } else if (type === 'success') {
+    status.style.borderColor = '#4caf50';
+    status.style.background = 'rgba(76, 175, 80, 0.2)';
+  } else {
+    status.style.borderColor = '#667eea';
+    status.style.background = 'rgba(102, 126, 234, 0.2)';
+  }
+}
+
+// Load sample data on button click (for testing)
+document.addEventListener('DOMContentLoaded', () => {
+  // Add a hidden test button
+  const testBtn = document.createElement('button');
+  testBtn.textContent = 'Load Sample Data';
+  testBtn.style.position = 'fixed';
+  testBtn.style.bottom = '20px';
+  testBtn.style.right = '20px';
+  testBtn.style.opacity = '0.5';
+  testBtn.onclick = () => {
+    document.getElementById('text-input').value = sampleGenealogy;
+    processTextInput();
+  };
+  document.body.appendChild(testBtn);
+});
+</script>
+
+</body>
+</html>

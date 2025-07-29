@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - Complete Installation Guide for All 30 Components</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+    margin: 0;
+    padding: 2rem;
+    background: #0a0a1a;
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
+  
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 3rem;
+    border-radius: 20px;
+    margin-bottom: 3rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin: 0;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+  
+  .subtitle {
+    font-size: 1.3rem;
+    color: #888;
+    margin-top: 0.5rem;
+  }
+  
+  .prototype-bundle {
+    background: rgba(102, 126, 234, 0.1);
+    border: 2px solid #667eea;
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .prototype-bundle h2 {
+    color: #667eea;
+    margin-top: 0;
+  }
+  
+  .component-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+  }
+  
+  .component-section:hover {
+    border-color: #667eea;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+  }
+  
+  h2 {
+    color: #f093fb;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+  }
+  
+  h3 {
+    color: #667eea;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .component-number {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+  
+  pre {
+    background: #1a1a2e;
+    border: 1px solid #2a2a3e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    color: #58d1eb;
+    margin: 1rem 0;
+  }
+  
+  code {
+    font-family: 'SF Mono', Monaco, monospace;
+  }
+  
+  .docker-compose {
+    background: #0f0f1f;
+    border: 2px solid #667eea;
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .phase-badge {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: 1rem;
+  }
+  
+  .phase-0 { background: #ff6b6b; color: white; }
+  .phase-1 { background: #4ecdc4; color: white; }
+  .phase-2 { background: #667eea; color: white; }
+  .phase-3 { background: #f093fb; color: white; }
+  
+  .note {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 5px;
+  }
+  
+  .warning {
+    background: rgba(255, 67, 54, 0.1);
+    border-left: 4px solid #ff4336;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 5px;
+  }
+  
+  .env-example {
+    background: rgba(76, 175, 80, 0.1);
+    border-left: 4px solid #4caf50;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 5px;
+  }
+  
+  @media (max-width: 768px) {
+    body { padding: 1rem; }
+    h1 { font-size: 2rem; }
+    pre { font-size: 0.8rem; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ContinuumOS Complete Installation Guide</h1>
+  <p class="subtitle">All 30 Components - From Development to Production</p>
+</div>
+
+<div class="prototype-bundle">
+  <h2>🚀 What is the Prototype Bundle?</h2>
+  <p>The <strong>Prototype Bundle</strong> is our minimal viable setup that gets you a working ContinuumOS demo in under 2 hours. It includes:</p>
+  <ul>
+    <li><strong>Core Pipeline:</strong> OCR → Embeddings → LLM → Basic Avatar</li>
+    <li><strong>Essential Storage:</strong> Neo4j for relationships + Pinecone for vectors</li>
+    <li><strong>Basic UI:</strong> React upload portal + simple chat interface</li>
+    <li><strong>MVP Features:</strong> Photo-to-text, voice cloning, basic persona generation</li>
+  </ul>
+  <p>Perfect for demos, investor pitches, and initial testing. Full production setup follows below.</p>
+</div>
+
+<!-- PHASE 0: FOUNDATIONS -->
+<h2>Phase 0: Foundation Setup (Day 1)</h2>
+
+<div class="component-section">
+  <h3><span class="component-number">22</span> FastAPI <span class="phase-badge phase-0">P-0</span></h3>
+  <pre><code># Python API Framework
+pip install fastapi uvicorn[standard] python-multipart
+pip install pydantic email-validator
+
+# Create main API file
+mkdir -p continuum-api/app
+cat > continuum-api/app/main.py << 'EOF'
+from fastapi import FastAPI, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
+
+app = FastAPI(title="ContinuumOS API")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.get("/")
+def read_root():
+    return {"message": "ContinuumOS API Running"}
+
+@app.post("/upload/heritage")
+async def upload_heritage(file: UploadFile):
+    return {"filename": file.filename}
+EOF
+
+# Run API
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">23</span> Docker & Docker Compose <span class="phase-badge phase-0">P-0</span></h3>
+  <pre><code># Install Docker Desktop (includes Compose)
+# macOS
+brew install --cask docker
+
+# Ubuntu/Debian
+sudo apt update
+sudo apt install docker.io docker-compose
+sudo usermod -aG docker $USER
+
+# Windows - Download Docker Desktop from docker.com
+
+# Verify installation
+docker --version
+docker-compose --version</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">24</span> Terraform for AWS <span class="phase-badge phase-0">P-0</span></h3>
+  <pre><code># Install Terraform
+# macOS
+brew tap hashicorp/tap
+brew install hashicorp/tap/terraform
+
+# Linux
+wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install terraform
+
+# Create infrastructure
+mkdir -p terraform
+cat > terraform/main.tf << 'EOF'
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_s3_bucket" "heritage_archive" {
+  bucket = "continuum-heritage-archive"
+  acl    = "private"
+}
+
+resource "aws_ecs_cluster" "continuum" {
+  name = "continuum-cluster"
+}
+EOF
+
+# Initialize and plan
+cd terraform
+terraform init
+terraform plan</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">25</span> GitHub Actions CI/CD <span class="phase-badge phase-0">P-0</span></h3>
+  <pre><code># Create GitHub Actions workflow
+mkdir -p .github/workflows
+cat > .github/workflows/deploy.yml << 'EOF'
+name: Deploy ContinuumOS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - run: |
+          pip install pytest fastapi
+          pytest tests/
+  
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      - run: |
+          docker build -t continuum-api .
+          docker tag continuum-api:latest $ECR_REGISTRY/continuum-api:latest
+          docker push $ECR_REGISTRY/continuum-api:latest
+EOF</code></pre>
+</div>
+
+<!-- PHASE 1: CORE PIPELINE -->
+<h2>Phase 1: Core Pipeline Components (Week 1-2)</h2>
+
+<div class="component-section">
+  <h3><span class="component-number">1</span> Tesseract OCR <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Install Tesseract OCR
+# macOS
+brew install tesseract
+brew install tesseract-lang  # Additional languages
+
+# Ubuntu/Debian
+sudo apt update
+sudo apt install tesseract-ocr tesseract-ocr-eng
+sudo apt install libtesseract-dev
+
+# Windows
+# Download installer from: https://github.com/UB-Mannheim/tesseract/wiki
+
+# Python wrapper
+pip install pytesseract pillow
+
+# Test OCR
+python << 'EOF'
+import pytesseract
+from PIL import Image
+
+# Test with sample image
+img = Image.open('sample_diary.jpg')
+text = pytesseract.image_to_string(img)
+print(text)
+EOF</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">2</span> FFmpeg <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Install FFmpeg
+# macOS
+brew install ffmpeg
+
+# Ubuntu/Debian
+sudo apt update
+sudo apt install ffmpeg
+
+# Windows - Download from ffmpeg.org
+
+# Python wrapper
+pip install ffmpeg-python
+
+# Test audio/video processing
+ffmpeg -i input_video.mp4 -vn -acodec pcm_s16le -ar 44100 -ac 2 output_audio.wav
+ffmpeg -i old_family_video.avi -c:v libx264 -preset slow -crf 22 converted.mp4</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">3</span> Neo4j Graph Database <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Install Neo4j Desktop
+# Download from: https://neo4j.com/download/
+
+# Or use Docker
+docker run -d \
+  --name neo4j-continuum \
+  -p 7474:7474 -p 7687:7687 \
+  -e NEO4J_AUTH=neo4j/continuum123 \
+  -v $PWD/neo4j/data:/data \
+  neo4j:latest
+
+# Python driver
+pip install neo4j
+
+# Create family graph
+from neo4j import GraphDatabase
+
+driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "continuum123"))
+
+with driver.session() as session:
+    session.run("""
+        CREATE (john:Person {name: 'John Smith', born: 1920, died: 1995})
+        CREATE (mary:Person {name: 'Mary Smith', born: 1922, died: 2000})
+        CREATE (john)-[:MARRIED]->(mary)
+        CREATE (child:Person {name: 'Jane Smith', born: 1945})
+        CREATE (john)-[:PARENT_OF]->(child)
+        CREATE (mary)-[:PARENT_OF]->(child)
+    """)</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">4</span> Pinecone Vector Database <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Install Pinecone client
+pip install pinecone-client
+
+# Initialize Pinecone
+import pinecone
+
+pinecone.init(
+    api_key="YOUR-API-KEY",  # Sign up at pinecone.io
+    environment="us-east1-gcp"
+)
+
+# Create index for memories
+pinecone.create_index(
+    "continuum-memories",
+    dimension=768,  # For sentence-transformers
+    metric="cosine"
+)
+
+# Connect to index
+index = pinecone.Index("continuum-memories")</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">5</span> Sentence Transformers <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Install sentence-transformers
+pip install sentence-transformers torch
+
+# Create embeddings
+from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Embed heritage content
+memories = [
+    "Grandpa loved fishing at the lake every Sunday",
+    "He taught me how to tie fishing knots",
+    "His favorite was rainbow trout"
+]
+
+embeddings = model.encode(memories)
+
+# Store in Pinecone
+import uuid
+vectors = [
+    (str(uuid.uuid4()), emb.tolist(), {"text": mem})
+    for emb, mem in zip(embeddings, memories)
+]
+index.upsert(vectors)</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">6</span> OpenAI GPT-4 <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Install OpenAI client
+pip install openai
+
+# Configure API
+import openai
+openai.api_key = "YOUR-OPENAI-API-KEY"
+
+# Create persona system prompt
+persona_prompt = """
+You are John Smith, born in 1920. You were a fisherman who loved the outdoors.
+Based on these memories: {memories}
+Respond as John would, using his speech patterns and knowledge.
+"""
+
+# Generate response
+response = openai.ChatCompletion.create(
+    model="gpt-4",
+    messages=[
+        {"role": "system", "content": persona_prompt},
+        {"role": "user", "content": "Tell me about your favorite fishing spot"}
+    ],
+    temperature=0.7
+)</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">7</span> LangChain RAG <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Install LangChain
+pip install langchain langchain-openai langchain-pinecone
+
+# Set up RAG pipeline
+from langchain.embeddings import OpenAIEmbeddings
+from langchain.vectorstores import Pinecone
+from langchain.chains import RetrievalQA
+from langchain.llms import OpenAI
+
+embeddings = OpenAIEmbeddings()
+vectorstore = Pinecone.from_existing_index(
+    index_name="continuum-memories",
+    embedding=embeddings
+)
+
+qa_chain = RetrievalQA.from_chain_type(
+    llm=OpenAI(model="gpt-4"),
+    chain_type="stuff",
+    retriever=vectorstore.as_retriever(search_kwargs={"k": 5})
+)
+
+# Query memories
+result = qa_chain.run("What did grandpa teach you about fishing?")</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">8</span> Stable Diffusion + LoRA <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Install Stable Diffusion WebUI
+git clone https://github.com/AUTOMATIC1111/stable-diffusion-webui.git
+cd stable-diffusion-webui
+
+# macOS/Linux
+./webui.sh
+
+# Windows
+webui-user.bat
+
+# For API usage
+pip install diffusers transformers accelerate
+
+# Generate talking head frames
+from diffusers import StableDiffusionPipeline
+import torch
+
+pipe = StableDiffusionPipeline.from_pretrained(
+    "runwayml/stable-diffusion-v1-5",
+    torch_dtype=torch.float16
+)
+pipe = pipe.to("cuda")
+
+# Generate avatar base
+prompt = "portrait of elderly man, kind face, fishing hat, photorealistic"
+image = pipe(prompt).images[0]</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">9</span> SadTalker / D-ID <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Option 1: SadTalker (Local)
+git clone https://github.com/OpenTalker/SadTalker.git
+cd SadTalker
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Download pretrained models
+bash scripts/download_models.sh
+
+# Generate talking video
+python inference.py \
+  --driven_audio grandpa_audio.wav \
+  --source_image grandpa_portrait.png \
+  --result_dir ./results
+
+# Option 2: D-ID API
+pip install requests
+
+import requests
+
+headers = {
+    "Authorization": f"Basic {D_ID_API_KEY}",
+    "Content-Type": "application/json"
+}
+
+data = {
+    "source_url": "https://your-s3.com/grandpa.jpg",
+    "driver_url": "https://your-s3.com/audio.mp3",
+    "webhook": "https://your-api.com/webhook"
+}
+
+response = requests.post(
+    "https://api.d-id.com/talks",
+    headers=headers,
+    json=data
+)</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">10</span> ElevenLabs / XTTS 2 <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Option 1: ElevenLabs (Cloud)
+pip install elevenlabs
+
+from elevenlabs import clone, generate, set_api_key
+
+set_api_key("YOUR-ELEVENLABS-KEY")
+
+# Clone voice from samples
+voice = clone(
+    name="Grandpa John",
+    description="John Smith's voice",
+    files=["grandpa_sample1.mp3", "grandpa_sample2.mp3"]
+)
+
+# Generate speech
+audio = generate(
+    text="Well, let me tell you about the biggest trout I ever caught...",
+    voice=voice,
+    model="eleven_monolingual_v1"
+)
+
+# Option 2: XTTS 2 (Local)
+pip install TTS
+
+from TTS.api import TTS
+
+tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2")
+tts.tts_to_file(
+    text="Hello, this is Grandpa speaking",
+    file_path="output.wav",
+    speaker_wav="grandpa_reference.wav",
+    language="en"
+)</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">15</span> React + Next.js <span class="phase-badge phase-1">P-1</span></h3>
+  <pre><code># Create Next.js app
+npx create-next-app@latest continuum-web --typescript --tailwind --app
+
+cd continuum-web
+
+# Install additional dependencies
+npm install @radix-ui/react-dialog @radix-ui/react-tabs
+npm install react-dropzone axios swr
+npm install framer-motion
+
+# Create upload component
+cat > app/components/HeritageUpload.tsx << 'EOF'
+import { useDropzone } from 'react-dropzone'
+import { useState } from 'react'
+
+export default function HeritageUpload() {
+  const [files, setFiles] = useState([])
+  
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png'],
+      'audio/*': ['.mp3', '.wav'],
+      'application/pdf': ['.pdf']
+    },
+    onDrop: acceptedFiles => {
+      setFiles(acceptedFiles)
+      // Upload to API
+    }
+  })
+  
+  return (
+    <div {...getRootProps()} className="border-2 border-dashed p-8">
+      <input {...getInputProps()} />
+      <p>Drop heritage files here</p>
+    </div>
+  )
+}
+EOF
+
+# Run development server
+npm run dev</code></pre>
+</div>
+
+<!-- PHASE 2: INTERACTION & FEATURES -->
+<h2>Phase 2: Interaction & Advanced Features (Week 3-4)</h2>
+
+<div class="component-section">
+  <h3><span class="component-number">11</span> MediaPipe Tasks WASM <span class="phase-badge phase-2">P-2</span></h3>
+  <pre><code># Install MediaPipe for web
+npm install @mediapipe/tasks-vision
+
+// In your React component
+import { FaceLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
+
+async function initializeMediaPipe() {
+  const vision = await FilesetResolver.forVisionTasks(
+    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision/wasm"
+  );
+  
+  const faceLandmarker = await FaceLandmarker.createFromOptions(vision, {
+    baseOptions: {
+      modelAssetPath: 'face_landmarker.task',
+      delegate: "GPU"
+    },
+    outputFaceBlendshapes: true,
+    runningMode: "VIDEO",
+    numFaces: 1
+  });
+  
+  return faceLandmarker;
+}</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">12</span> Meta Interaction SDK <span class="phase-badge phase-2">P-2</span></h3>
+  <pre><code># In Unity Package Manager
+# Add package from git URL:
+https://github.com/oculus-samples/Unity-Movement.git
+
+# Or download Oculus Integration from Asset Store
+
+// C# Script for hand tracking
+using Oculus.Interaction;
+using UnityEngine;
+
+public class HandGestureController : MonoBehaviour {
+    [SerializeField] private Hand _hand;
+    
+    void Update() {
+        if (_hand.IsPointing) {
+            // Ancestor points at something
+            RaycastHit hit;
+            if (Physics.Raycast(_hand.PointerPose, out hit)) {
+                // Handle interaction
+            }
+        }
+    }
+}</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">13</span> Unity Animator + NodeCanvas <span class="phase-badge phase-2">P-2</span></h3>
+  <pre><code># Purchase NodeCanvas from Unity Asset Store ($95)
+# https://assetstore.unity.com/packages/tools/behavior-ai/nodecanvas-14914
+
+# After import, create behavior tree
+// C# Integration
+using NodeCanvas.BehaviourTrees;
+using UnityEngine;
+
+public class AncestorBehavior : MonoBehaviour {
+    private BehaviourTreeOwner _btOwner;
+    
+    void Start() {
+        _btOwner = GetComponent<BehaviourTreeOwner>();
+        
+        // Set blackboard variables
+        _btOwner.blackboard.SetVariableValue("UserName", "Grandson");
+        _btOwner.blackboard.SetVariableValue("Mood", "Happy");
+    }
+    
+    public void TriggerStory(string topic) {
+        _btOwner.SendEvent("TellStory", topic);
+    }
+}</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">14</span> Unity 2022 LTS <span class="phase-badge phase-2">P-2</span></h3>
+  <pre><code># Install Unity Hub
+# Download from: https://unity.com/download
+
+# Install Unity 2022.3 LTS via Hub
+# Select modules:
+# - Android Build Support
+# - iOS Build Support  
+# - WebGL Build Support
+# - Windows Build Support
+
+# Create new project with URP template
+
+# Install required packages
+Window > Package Manager
+- Install: XR Plugin Management
+- Install: XR Interaction Toolkit
+- Install: Universal RP
+- Install: TextMeshPro
+
+# Configure for Quest
+Edit > Project Settings > XR Plug-in Management
+- Check "Oculus" for Android
+- Check "OpenXR" for Standalone</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">16</span> WebRTC (simple-peer) <span class="phase-badge phase-2">P-2</span></h3>
+  <pre><code># Install WebRTC dependencies
+npm install simple-peer socket.io-client
+
+# Create video call component
+import Peer from 'simple-peer';
+import { useEffect, useRef, useState } from 'react';
+
+export default function AncestorCall({ ancestorId }) {
+  const [peer, setPeer] = useState(null);
+  const myVideo = useRef();
+  const ancestorVideo = useRef();
+  
+  useEffect(() => {
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        myVideo.current.srcObject = stream;
+        
+        const p = new Peer({
+          initiator: true,
+          trickle: false,
+          stream: stream
+        });
+        
+        p.on('signal', data => {
+          // Send signal to server
+          socket.emit('callAncestor', { ancestorId, signal: data });
+        });
+        
+        p.on('stream', stream => {
+          // Ancestor's video stream
+          ancestorVideo.current.srcObject = stream;
+        });
+        
+        setPeer(p);
+      });
+  }, [ancestorId]);
+  
+  return (
+    <div className="grid grid-cols-2 gap-4">
+      <video ref={myVideo} autoPlay muted />
+      <video ref={ancestorVideo} autoPlay />
+    </div>
+  );
+}</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">18</span> Unleash Feature Flags <span class="phase-badge phase-2">P-2</span></h3>
+  <pre><code># Sign up for Unleash Cloud (free tier)
+# https://app.unleash-hosted.com/sign-up
+
+# Install SDK
+npm install unleash-proxy-client
+
+# Configure in React
+import { UnleashClient } from 'unleash-proxy-client';
+
+const unleash = new UnleashClient({
+  url: 'https://app.unleash-hosted.com/demo/api/proxy',
+  clientKey: 'YOUR-CLIENT-KEY',
+  appName: 'continuum-web'
+});
+
+unleash.start();
+
+// Check feature flags
+if (unleash.isEnabled('feature.hologram_preview')) {
+  // Show hologram features
+}
+
+# Server-side (Python)
+pip install UnleashClient
+
+from UnleashClient import UnleashClient
+
+client = UnleashClient(
+    url="https://app.unleash-hosted.com/api",
+    app_name="continuum-api",
+    custom_headers={'Authorization': 'YOUR-API-KEY'}
+)
+
+client.initialize_client()
+
+if client.is_enabled("feature.advanced_rag"):
+    # Use advanced RAG features
+    pass</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">26</span> Grafana Cloud <span class="phase-badge phase-2">P-2</span></h3>
+  <pre><code># Sign up for Grafana Cloud Free
+# https://grafana.com/products/cloud/
+
+# Install Grafana Agent
+wget https://github.com/grafana/agent/releases/latest/download/agent-linux-amd64.zip
+unzip agent-linux-amd64.zip
+chmod +x agent-linux-amd64
+
+# Configure agent
+cat > agent-config.yaml << 'EOF'
+metrics:
+  global:
+    scrape_interval: 60s
+    remote_write:
+      - url: https://prometheus-us-central1.grafana.net/api/prom/push
+        basic_auth:
+          username: YOUR-METRICS-USERNAME
+          password: YOUR-API-KEY
+
+logs:
+  configs:
+    - name: default
+      clients:
+        - url: https://logs-prod-us-central1.grafana.net/loki/api/v1/push
+          basic_auth:
+            username: YOUR-LOGS-USERNAME
+            password: YOUR-API-KEY
+      positions:
+        filename: /tmp/positions.yaml
+      target_config:
+        sync_period: 10s
+EOF
+
+# Run agent
+./agent-linux-amd64 -config.file=agent-config.yaml</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">27</span> Stripe Billing <span class="phase-badge phase-2">P-2</span></h3>
+  <pre><code># Install Stripe
+npm install stripe @stripe/stripe-js
+
+# Backend setup
+const stripe = require('stripe')('YOUR-SECRET-KEY');
+
+// Create products
+const heritageProduct = await stripe.products.create({
+  name: 'Heritage Archive',
+  description: 'Store unlimited family memories'
+});
+
+const avatarProduct = await stripe.products.create({
+  name: 'Interactive Avatar',
+  description: 'Create living AI personas'
+});
+
+// Create prices
+const heritagePrice = await stripe.prices.create({
+  product: heritageProduct.id,
+  unit_amount: 2999, // $29.99
+  currency: 'usd',
+  recurring: { interval: 'month' }
+});
+
+// Create subscription
+app.post('/create-subscription', async (req, res) => {
+  const subscription = await stripe.subscriptions.create({
+    customer: req.body.customerId,
+    items: [{ price: heritagePrice.id }],
+    payment_behavior: 'default_incomplete',
+    expand: ['latest_invoice.payment_intent']
+  });
+  
+  res.json({
+    subscriptionId: subscription.id,
+    clientSecret: subscription.latest_invoice.payment_intent.client_secret
+  });
+});</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">30</span> OpenAI Moderation <span class="phase-badge phase-2">P-2</span></h3>
+  <pre><code># Implement content moderation
+import openai
+
+async def moderate_content(text):
+    response = openai.Moderation.create(input=text)
+    
+    results = response["results"][0]
+    if results["flagged"]:
+        categories = [cat for cat, flagged in results["categories"].items() if flagged]
+        raise ValueError(f"Content flagged for: {', '.join(categories)}")
+    
+    return True
+
+# Use in upload pipeline
+@app.post("/upload/memory")
+async def upload_memory(content: str):
+    try:
+        await moderate_content(content)
+    except ValueError as e:
+        return {"error": str(e)}, 400
+    
+    # Process approved content
+    return {"status": "approved"}</code></pre>
+</div>
+
+<!-- PHASE 3: ADVANCED FEATURES -->
+<h2>Phase 3: Multi-channel & Compliance (Week 5-6)</h2>
+
+<div class="component-section">
+  <h3><span class="component-number">17</span> Expo React Native <span class="phase-badge phase-3">P-3</span></h3>
+  <pre><code># Install Expo CLI
+npm install -g expo-cli
+
+# Create mobile app
+expo init continuum-mobile --template typescript
+
+cd continuum-mobile
+
+# Install dependencies
+expo install expo-camera expo-media-library expo-sharing
+npm install react-native-webrtc
+
+# Create share extension
+// ios/ShareExtension/ShareViewController.swift
+import UIKit
+import Social
+
+class ShareViewController: SLComposeServiceViewController {
+    override func isContentValid() -> Bool {
+        return true
+    }
+    
+    override func didSelectPost() {
+        // Send to ContinuumOS API
+        if let item = extensionContext?.inputItems.first as? NSExtensionItem {
+            // Process shared content
+        }
+        self.extensionContext!.completeRequest(returningItems: [], completionHandler: nil)
+    }
+}
+
+# Build and deploy
+expo build:ios
+expo build:android</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">19</span> Podcast RSS Generator <span class="phase-badge phase-3">P-3</span></h3>
+  <pre><code># Install RSS generator
+pip install feedgen
+
+from feedgen.feed import FeedGenerator
+from datetime import datetime
+
+def generate_ancestor_podcast(ancestor_id, memories):
+    fg = FeedGenerator()
+    fg.title(f"{ancestor_name}'s Life Story")
+    fg.description(f"The memories and stories of {ancestor_name}")
+    fg.link(href=f"https://continuum.os/podcasts/{ancestor_id}")
+    fg.logo(f"https://continuum.os/avatars/{ancestor_id}.jpg")
+    fg.language('en')
+    
+    # Add episodes
+    for idx, memory in enumerate(memories):
+        fe = fg.add_entry()
+        fe.id(f"episode-{idx}")
+        fe.title(memory['title'])
+        fe.description(memory['description'])
+        fe.enclosure(
+            url=f"https://continuum.os/audio/{ancestor_id}/{idx}.mp3",
+            length=memory['duration'],
+            type='audio/mpeg'
+        )
+        fe.pubDate(datetime.now())
+    
+    # Generate RSS
+    fg.rss_file(f'podcasts/{ancestor_id}.xml')
+    
+    return f"https://continuum.os/podcasts/{ancestor_id}.xml"</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">20</span> YouTube Data API <span class="phase-badge phase-3">P-3</span></h3>
+  <pre><code># Install Google API client
+pip install google-api-python-client google-auth-httplib2
+
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
+
+# Initialize YouTube API
+youtube = build('youtube', 'v3', developerKey='YOUR-API-KEY')
+
+def upload_ancestor_video(video_path, ancestor_data):
+    request_body = {
+        'snippet': {
+            'title': f"{ancestor_data['name']}'s Story - {ancestor_data['topic']}",
+            'description': f"A conversation with {ancestor_data['name']} about {ancestor_data['topic']}",
+            'tags': ['family history', 'continuum', 'memories'],
+            'categoryId': '22'  # People & Blogs
+        },
+        'status': {
+            'privacyStatus': 'unlisted',  # Only with link
+            'selfDeclaredMadeForKids': False
+        }
+    }
+    
+    media = MediaFileUpload(video_path, chunksize=-1, resumable=True)
+    
+    request = youtube.videos().insert(
+        part=','.join(request_body.keys()),
+        body=request_body,
+        media_body=media
+    )
+    
+    response = request.execute()
+    return f"https://youtube.com/watch?v={response['id']}"</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">21</span> Looking Glass Hologram <span class="phase-badge phase-3">P-3</span></h3>
+  <pre><code># Install Looking Glass SDK
+# Download from: https://lookingglassfactory.com/software
+
+# Unity integration
+using LookingGlass;
+
+public class HologramRenderer : MonoBehaviour {
+    [SerializeField] private Holoplay holoplay;
+    
+    void Start() {
+        // Configure for Portrait device
+        holoplay.cal.aspect = 0.75f;
+        holoplay.cal.viewCone = 40f;
+        holoplay.quiltPreset = Holoplay.QuiltPreset.Portrait;
+    }
+    
+    public void RenderAncestor(GameObject ancestorModel) {
+        // Position in sweet spot
+        ancestorModel.transform.position = holoplay.transform.position;
+        ancestorModel.transform.localScale = Vector3.one * 0.3f;
+        
+        // Enable holographic capture
+        holoplay.RenderQuilt();
+    }
+}
+
+# Export hologram video
+ffmpeg -i rendered_quilt.mp4 -vf "format=yuv420p" -c:v libx264 -crf 18 hologram_output.mp4</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">28</span> DynamoDB + S3 Consent <span class="phase-badge phase-3">P-3</span></h3>
+  <pre><code># Create consent ledger
+import boto3
+import hashlib
+import json
+from datetime import datetime
+
+dynamodb = boto3.resource('dynamodb')
+s3 = boto3.client('s3')
+
+# Create consent table
+table = dynamodb.create_table(
+    TableName='continuum-consent-ledger',
+    KeySchema=[
+        {'AttributeName': 'consent_id', 'KeyType': 'HASH'},
+        {'AttributeName': 'timestamp', 'KeyType': 'RANGE'}
+    ],
+    AttributeDefinitions=[
+        {'AttributeName': 'consent_id', 'AttributeType': 'S'},
+        {'AttributeName': 'timestamp', 'AttributeType': 'N'}
+    ],
+    BillingMode='PAY_PER_REQUEST'
+)
+
+def record_consent(user_id, ancestor_id, consent_type, details):
+    consent_data = {
+        'user_id': user_id,
+        'ancestor_id': ancestor_id,
+        'type': consent_type,
+        'details': details,
+        'timestamp': datetime.now().isoformat(),
+        'ip_address': request.remote_addr,
+        'user_agent': request.headers.get('User-Agent')
+    }
+    
+    # Create immutable hash
+    consent_hash = hashlib.sha256(
+        json.dumps(consent_data, sort_keys=True).encode()
+    ).hexdigest()
+    
+    # Store in DynamoDB
+    table.put_item(Item={
+        'consent_id': consent_hash,
+        'timestamp': int(datetime.now().timestamp()),
+        **consent_data
+    })
+    
+    # Backup to S3
+    s3.put_object(
+        Bucket='continuum-consent-backup',
+        Key=f"consent/{consent_hash}.json",
+        Body=json.dumps(consent_data),
+        ServerSideEncryption='AES256'
+    )
+    
+    return consent_hash</code></pre>
+</div>
+
+<div class="component-section">
+  <h3><span class="component-number">29</span> AWS Macie <span class="phase-badge phase-3">P-3</span></h3>
+  <pre><code># Enable Macie
+aws macie2 enable-macie --region us-east-1
+
+# Create classification job
+aws macie2 create-classification-job \
+  --name "continuum-pii-scan" \
+  --s3-job-definition '{
+    "bucketDefinitions": [{
+      "accountId": "123456789012",
+      "buckets": ["continuum-heritage-archive"]
+    }]
+  }' \
+  --schedule-frequency '{
+    "dailySchedule": {}
+  }'
+
+# Python integration
+import boto3
+
+macie = boto3.client('macie2')
+
+def scan_upload(bucket, key):
+    # Create one-time job
+    response = macie.create_classification_job(
+        name=f"scan-{key}",
+        s3JobDefinition={
+            'bucketDefinitions': [{
+                'accountId': '123456789012',
+                'buckets': [bucket]
+            }],
+            'scoping': {
+                'includes': {
+                    'and': [{
+                        'simpleScopeTerm': {
+                            'key': 'OBJECT_KEY',
+                            'values': [key]
+                        }
+                    }]
+                }
+            }
+        }
+    )
+    
+    return response['jobId']</code></pre>
+</div>
+
+<!-- DOCKER COMPOSE -->
+<div class="docker-compose">
+  <h2>🐳 Complete Docker Compose Setup</h2>
+  <pre><code># docker-compose.yml - Full Production Stack
+version: '3.9'
+
+services:
+  # API Gateway
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+      - NEO4J_URI=bolt://neo4j:7687
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - neo4j
+      - redis
+      - pinecone-proxy
+    volumes:
+      - ./heritage_uploads:/app/uploads
+
+  # Graph Database
+  neo4j:
+    image: neo4j:5-enterprise
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      - NEO4J_AUTH=neo4j/continuum123
+      - NEO4J_ACCEPT_LICENSE_AGREEMENT=yes
+      - NEO4J_dbms_memory_heap_max__size=2G
+    volumes:
+      - neo4j_data:/data
+
+  # Vector Database Proxy
+  pinecone-proxy:
+    build: ./pinecone-proxy
+    ports:
+      - "9000:9000"
+    environment:
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+      - PINECONE_ENVIRONMENT=${PINECONE_ENV}
+
+  # Redis Cache
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+  # OCR Service
+  ocr-service:
+    build: ./services/ocr
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./heritage_uploads:/app/uploads
+
+  # Voice Cloning Service
+  voice-service:
+    build: ./services/voice
+    ports:
+      - "8002:8002"
+    environment:
+      - ELEVENLABS_API_KEY=${ELEVENLABS_API_KEY}
+    volumes:
+      - ./voice_samples:/app/samples
+
+  # Avatar Generation
+  avatar-service:
+    build: ./services/avatar
+    ports:
+      - "8003:8003"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # Web Frontend
+  web:
+    build: ./web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api:8000
+      - NEXT_PUBLIC_WEBSOCKET_URL=ws://api:8000/ws
+
+  # WebRTC Signaling
+  signaling:
+    build: ./signaling
+    ports:
+      - "3001:3001"
+    environment:
+      - REDIS_URL=redis://redis:6379
+
+  # Monitoring
+  grafana-agent:
+    image: grafana/agent:latest
+    ports:
+      - "12345:12345"
+    volumes:
+      - ./monitoring/agent-config.yaml:/etc/agent-config.yaml
+      - /var/log:/var/log:ro
+    command:
+      - -config.file=/etc/agent-config.yaml
+      - -metrics.wal-directory=/tmp/agent/wal
+
+volumes:
+  neo4j_data:
+  redis_data:
+  heritage_uploads:
+  voice_samples:</code></pre>
+</div>
+
+<div class="env-example">
+  <h2>🔐 Environment Variables (.env)</h2>
+  <pre><code># API Keys
+OPENAI_API_KEY=sk-...
+ELEVENLABS_API_KEY=...
+D_ID_API_KEY=...
+PINECONE_API_KEY=...
+PINECONE_ENV=us-east1-gcp
+
+# AWS
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_REGION=us-east-1
+S3_BUCKET=continuum-heritage
+
+# Database
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=continuum123
+
+# Stripe
+STRIPE_SECRET_KEY=sk_live_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Unleash
+UNLEASH_API_URL=https://app.unleash-hosted.com/api
+UNLEASH_CLIENT_KEY=...
+
+# Grafana
+GRAFANA_METRICS_URL=https://prometheus-us-central1.grafana.net/api/prom/push
+GRAFANA_METRICS_USER=...
+GRAFANA_API_KEY=...
+
+# YouTube
+YOUTUBE_API_KEY=...
+
+# GitHub
+GITHUB_TOKEN=...</code></pre>
+</div>
+
+<div class="note">
+  <h3>📝 Installation Order</h3>
+  <ol>
+    <li><strong>Phase 0 (Day 1):</strong> Set up Docker, FastAPI, Terraform, GitHub Actions</li>
+    <li><strong>Phase 1 (Week 1-2):</strong> Core pipeline - OCR, embeddings, LLM, basic UI</li>
+    <li><strong>Phase 2 (Week 3-4):</strong> Interaction features - VR/AR, WebRTC, billing</li>
+    <li><strong>Phase 3 (Week 5-6):</strong> Advanced features - mobile, compliance, distribution</li>
+  </ol>
+</div>
+
+<div class="warning">
+  <h3>⚠️ Important Notes</h3>
+  <ul>
+    <li>GPU required for Stable Diffusion and some voice models</li>
+    <li>Estimated monthly costs: ~$500-2000 depending on usage</li>
+    <li>Some components (NodeCanvas, D-ID) require paid licenses</li>
+    <li>Ensure GDPR/CCPA compliance for all data handling</li>
+  </ul>
+</div>
+
+</body>
+</html>

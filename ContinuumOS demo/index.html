@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS Demo - Interactive Ancestor Experience</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+    background: #0a0a1a;
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
+  
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  h1 {
+    font-size: 3rem;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 1rem;
+  }
+  
+  .demo-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr 350px;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .panel {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+  }
+  
+  .panel h2 {
+    color: #f093fb;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+  }
+  
+  /* Ancestor Selection */
+  .ancestor-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .ancestor-card:hover {
+    transform: translateX(10px);
+    border-left: 3px solid #667eea;
+  }
+  
+  .ancestor-card.active {
+    background: rgba(102, 126, 234, 0.2);
+    border: 2px solid #667eea;
+  }
+  
+  .avatar-circle {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+  
+  /* Chat Interface */
+  .chat-container {
+    height: 500px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 15px;
+    margin-bottom: 1rem;
+  }
+  
+  .message {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 10px;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .message.user {
+    background: rgba(102, 126, 234, 0.2);
+    margin-left: 20%;
+  }
+  
+  .message.ancestor {
+    background: rgba(240, 147, 251, 0.1);
+    margin-right: 20%;
+  }
+  
+  .message-label {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 0.5rem;
+  }
+  
+  .chat-input {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .chat-input input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+    color: white;
+    font-size: 1rem;
+  }
+  
+  .chat-input button {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 1rem 2rem;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .chat-input button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  }
+  
+  /* Memory & Episode Panel */
+  .memory-item {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .memory-tag {
+    display: inline-block;
+    background: rgba(102, 126, 234, 0.3);
+    padding: 0.2rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+  }
+  
+  .episode-creator {
+    background: rgba(76, 175, 80, 0.1);
+    border: 2px solid #4caf50;
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .episode-creator h3 {
+    color: #4caf50;
+    margin-bottom: 1rem;
+  }
+  
+  .create-episode-btn {
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 1rem;
+    width: 100%;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 1rem;
+  }
+  
+  /* Upload Section */
+  .upload-section {
+    background: rgba(255, 255, 255, 0.03);
+    border: 2px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  .upload-section input[type="file"] {
+    display: none;
+  }
+  
+  .upload-label {
+    display: inline-block;
+    background: rgba(102, 126, 234, 0.2);
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .upload-label:hover {
+    background: rgba(102, 126, 234, 0.3);
+  }
+  
+  /* Status Messages */
+  .status {
+    background: rgba(76, 175, 80, 0.2);
+    border: 1px solid #4caf50;
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem 0;
+    text-align: center;
+    display: none;
+  }
+  
+  .status.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  /* Audio Visualization */
+  .audio-viz {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    height: 40px;
+    margin: 1rem 0;
+  }
+  
+  .audio-bar {
+    width: 4px;
+    background: #667eea;
+    border-radius: 2px;
+    animation: audioWave 1s ease-in-out infinite;
+  }
+  
+  .audio-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+  .audio-bar:nth-child(2) { height: 30px; animation-delay: 0.1s; }
+  .audio-bar:nth-child(3) { height: 25px; animation-delay: 0.2s; }
+  .audio-bar:nth-child(4) { height: 35px; animation-delay: 0.3s; }
+  .audio-bar:nth-child(5) { height: 28px; animation-delay: 0.4s; }
+  
+  @keyframes audioWave {
+    0%, 100% { transform: scaleY(0.5); }
+    50% { transform: scaleY(1); }
+  }
+  
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .demo-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>ContinuumOS Demo</h1>
+    <p style="color: #888; font-size: 1.2rem;">Interactive Ancestor Experience - Test Drive</p>
+  </div>
+  
+  <div class="demo-grid">
+    <!-- Left Panel: Ancestor Selection -->
+    <div class="panel">
+      <h2>Select Ancestor</h2>
+      
+      <div class="ancestor-card active" onclick="selectAncestor('grandpa-joe')">
+        <div class="avatar-circle">👴</div>
+        <h3 style="color: white; text-align: center;">Grandpa Joe</h3>
+        <p style="text-align: center; font-size: 0.9rem; color: #888;">1925-1995</p>
+        <p style="font-size: 0.85rem; margin-top: 0.5rem;">WWII Veteran, Master Carpenter</p>
+      </div>
+      
+      <div class="ancestor-card" onclick="selectAncestor('grandma-mary')">
+        <div class="avatar-circle">👵</div>
+        <h3 style="color: white; text-align: center;">Grandma Mary</h3>
+        <p style="text-align: center; font-size: 0.9rem; color: #888;">1928-2003</p>
+        <p style="font-size: 0.85rem; margin-top: 0.5rem;">School Teacher, Community Leader</p>
+      </div>
+      
+      <div class="upload-section">
+        <label for="genealogy-upload" class="upload-label">
+          📁 Upload Your Genealogy
+        </label>
+        <input type="file" id="genealogy-upload" accept=".txt,.pdf,.json" onchange="handleGenealogyUpload(event)">
+        <p style="font-size: 0.85rem; color: #888; margin-top: 1rem;">Upload GEDCOM, PDF, or text files</p>
+      </div>
+    </div>
+    
+    <!-- Center Panel: Chat Interface -->
+    <div class="panel">
+      <h2>Chat with <span id="current-ancestor">Grandpa Joe</span></h2>
+      
+      <div class="chat-container">
+        <div class="chat-messages" id="chat-messages">
+          <div class="message ancestor">
+            <div class="message-label">Grandpa Joe</div>
+            <p>Well hello there! It's so good to talk with you. What would you like to know about? I've got plenty of stories about the war, fishing at Miller's Lake, or building furniture in my workshop.</p>
+          </div>
+        </div>
+        
+        <div class="chat-input">
+          <input type="text" id="user-input" placeholder="Ask a question or share a memory..." onkeypress="handleKeyPress(event)">
+          <button onclick="sendMessage()">Send</button>
+        </div>
+      </div>
+      
+      <div class="audio-viz" id="audio-viz" style="display: none;">
+        <div class="audio-bar"></div>
+        <div class="audio-bar"></div>
+        <div class="audio-bar"></div>
+        <div class="audio-bar"></div>
+        <div class="audio-bar"></div>
+      </div>
+      
+      <div class="status" id="status"></div>
+    </div>
+    
+    <!-- Right Panel: Memory & Episodes -->
+    <div class="panel">
+      <h2>Memory Kernel</h2>
+      
+      <div id="memory-list">
+        <div class="memory-item">
+          <span class="memory-tag">War</span>
+          <span class="memory-tag">1944</span>
+          <p style="margin-top: 0.5rem;">Served in the Pacific Theater during WWII</p>
+        </div>
+        
+        <div class="memory-item">
+          <span class="memory-tag">Family</span>
+          <span class="memory-tag">1946</span>
+          <p style="margin-top: 0.5rem;">Met Mary at a USO dance</p>
+        </div>
+        
+        <div class="memory-item">
+          <span class="memory-tag">Work</span>
+          <span class="memory-tag">1952</span>
+          <p style="margin-top: 0.5rem;">Built first house with own hands</p>
+        </div>
+      </div>
+      
+      <div class="episode-creator">
+        <h3>Create Episode</h3>
+        <p style="font-size: 0.9rem;">Generate a podcast/video episode based on this conversation</p>
+        <select id="episode-type" style="width: 100%; padding: 0.5rem; margin: 0.5rem 0; background: #333; color: white; border: 1px solid #666; border-radius: 5px;">
+          <option value="podcast">Audio Podcast (5 min)</option>
+          <option value="video">Video Interview (10 min)</option>
+          <option value="story">Story Episode (15 min)</option>
+        </select>
+        <button class="create-episode-btn" onclick="createEpisode()">Generate Episode</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Demo data - in real app, this would come from your genealogy files
+const ancestors = {
+  'grandpa-joe': {
+    name: 'Grandpa Joe',
+    years: '1925-1995',
+    personality: 'warm, storyteller, humble',
+    memories: [
+      { tags: ['War', '1944'], content: 'Served in the Pacific Theater during WWII' },
+      { tags: ['Family', '1946'], content: 'Met Mary at a USO dance' },
+      { tags: ['Work', '1952'], content: 'Built first house with own hands' },
+      { tags: ['Hobby', 'Ongoing'], content: 'Loved fishing at Miller\'s Lake every Sunday' },
+      { tags: ['Wisdom'], content: 'Measure twice, cut once - applies to life too' }
+    ],
+    responses: {
+      'war': "The war... that was a difficult time. I was just 19 when I enlisted. Saw things no young man should see in the Pacific. But we did what we had to do. Made some lifelong friends though - bonds forged in those tough times last forever.",
+      'mary': "Ah, Mary! The love of my life. Met her at a USO dance in 1946. She was wearing a blue dress and had the prettiest smile. I was so nervous I could barely ask her to dance. But she said yes, and we danced to 'I'll Be Seeing You.' Married her a year later.",
+      'fishing': "Fishing was my sanctuary. Every Sunday after church, I'd head to Miller's Lake. It wasn't just about catching fish - it was about the peace, the quiet, time to think. Best memories are taking you kids out there, teaching you to tie flies.",
+      'workshop': "My workshop was my pride and joy. The smell of fresh sawdust, the feel of smooth wood grain... I built our dining table, your mom's rocking chair, countless toys. Each piece had a bit of my soul in it.",
+      'advice': "Best advice I can give? Work hard, love your family, and always keep your word. Measure twice, cut once - that's not just for woodworking, that's for life decisions too.",
+      'default': "That's interesting... tell me more about that. You know, everything connects somehow. What specifically would you like to know?"
+    }
+  },
+  'grandma-mary': {
+    name: 'Grandma Mary',
+    years: '1928-2003',
+    personality: 'nurturing, organized, community-minded',
+    memories: [
+      { tags: ['Career', '1950'], content: 'Started teaching 3rd grade at Lincoln Elementary' },
+      { tags: ['Family', '1947'], content: 'Married Joe after a whirlwind romance' },
+      { tags: ['Community', '1960s'], content: 'Organized charity drives every holiday season' },
+      { tags: ['Cooking'], content: 'Famous apple pie won county fair 3 years running' }
+    ],
+    responses: {
+      'teaching': "Oh, teaching was my calling! 35 years at Lincoln Elementary. Every child was special. I still remember their faces - Tommy who struggled with reading until we found he needed glasses, Sarah who went on to become a doctor...",
+      'joe': "Your grandfather was quite the charmer! That first dance, he was so nervous his hands were shaking. But he was gentle and kind, and I knew right away he was special. We had 48 wonderful years together.",
+      'cooking': "My apple pie? Oh dear, that's the family secret recipe! The trick is a touch of cardamom and using three different types of apples. But the real secret is making it with love - food tastes better when it's made for family.",
+      'default': "Oh my dear, that reminds me of something... what else would you like to know?"
+    }
+  }
+};
+
+let currentAncestor = 'grandpa-joe';
+let conversationHistory = [];
+
+function selectAncestor(ancestorId) {
+  currentAncestor = ancestorId;
+  const ancestor = ancestors[ancestorId];
+  
+  // Update UI
+  document.getElementById('current-ancestor').textContent = ancestor.name;
+  document.querySelectorAll('.ancestor-card').forEach(card => card.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  
+  // Update memory list
+  const memoryList = document.getElementById('memory-list');
+  memoryList.innerHTML = ancestor.memories.map(memory => `
+    <div class="memory-item">
+      ${memory.tags.map(tag => `<span class="memory-tag">${tag}</span>`).join('')}
+      <p style="margin-top: 0.5rem;">${memory.content}</p>
+    </div>
+  `).join('');
+  
+  // Clear chat and add greeting
+  const chatMessages = document.getElementById('chat-messages');
+  chatMessages.innerHTML = `
+    <div class="message ancestor">
+      <div class="message-label">${ancestor.name}</div>
+      <p>Hello dear, it's so wonderful to talk with you. What's on your mind today?</p>
+    </div>
+  `;
+  
+  conversationHistory = [];
+}
+
+function sendMessage() {
+  const input = document.getElementById('user-input');
+  const message = input.value.trim();
+  if (!message) return;
+  
+  const chatMessages = document.getElementById('chat-messages');
+  const ancestor = ancestors[currentAncestor];
+  
+  // Add user message
+  chatMessages.innerHTML += `
+    <div class="message user">
+      <div class="message-label">You</div>
+      <p>${message}</p>
+    </div>
+  `;
+  
+  // Save to conversation history
+  conversationHistory.push({ role: 'user', content: message });
+  
+  // Show audio visualization
+  document.getElementById('audio-viz').style.display = 'flex';
+  
+  // Generate response
+  setTimeout(() => {
+    const response = generateResponse(message, ancestor);
+    
+    chatMessages.innerHTML += `
+      <div class="message ancestor">
+        <div class="message-label">${ancestor.name}</div>
+        <p>${response}</p>
+      </div>
+    `;
+    
+    conversationHistory.push({ role: 'ancestor', content: response });
+    
+    // Add new memory if significant
+    if (message.includes('tell me about') || message.includes('remember')) {
+      addMemory(message, response);
+    }
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    document.getElementById('audio-viz').style.display = 'none';
+  }, 1500);
+  
+  input.value = '';
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function generateResponse(message, ancestor) {
+  const lowerMessage = message.toLowerCase();
+  
+  // Check for keyword matches
+  for (let keyword in ancestor.responses) {
+    if (keyword !== 'default' && lowerMessage.includes(keyword)) {
+      return ancestor.responses[keyword];
+    }
+  }
+  
+  // Context-aware responses
+  if (lowerMessage.includes('love') || lowerMessage.includes('miss')) {
+    return `I love you too, dear. And I'm always with you, in your heart and in these memories we share. What's your favorite memory of us together?`;
+  }
+  
+  if (lowerMessage.includes('how') || lowerMessage.includes('what')) {
+    return ancestor.responses.default;
+  }
+  
+  // Default response with personality
+  const personalityResponses = {
+    'warm, storyteller, humble': [
+      "That reminds me of a story...",
+      "You know, that's a good question. Let me think...",
+      "Ah, that takes me back..."
+    ],
+    'nurturing, organized, community-minded': [
+      "Oh dear, that's wonderful to hear...",
+      "You know, I always believed that...",
+      "That reminds me of when..."
+    ]
+  };
+  
+  const responses = personalityResponses[ancestor.personality] || ["Interesting..."];
+  return responses[Math.floor(Math.random() * responses.length)] + " " + ancestor.responses.default;
+}
+
+function addMemory(question, response) {
+  const memoryList = document.getElementById('memory-list');
+  const newMemory = document.createElement('div');
+  newMemory.className = 'memory-item';
+  newMemory.style.background = 'rgba(76, 175, 80, 0.1)';
+  newMemory.innerHTML = `
+    <span class="memory-tag">New</span>
+    <span class="memory-tag">Today</span>
+    <p style="margin-top: 0.5rem;">Discussed: ${question.substring(0, 50)}...</p>
+  `;
+  memoryList.appendChild(newMemory);
+}
+
+function handleKeyPress(event) {
+  if (event.key === 'Enter') {
+    sendMessage();
+  }
+}
+
+function createEpisode() {
+  const episodeType = document.getElementById('episode-type').value;
+  const status = document.getElementById('status');
+  
+  status.className = 'status show';
+  status.innerHTML = `<strong>Creating ${episodeType}...</strong><br>This would generate a ${episodeType} based on your conversation.`;
+  
+  // In real app, this would:
+  // 1. Send conversation history to AI
+  // 2. Generate script
+  // 3. Create audio with ElevenLabs
+  // 4. Package as downloadable episode
+  
+  setTimeout(() => {
+    status.innerHTML = `
+      <strong>✅ Episode Ready!</strong><br>
+      "${ancestors[currentAncestor].name} - Family Memories"<br>
+      <button style="margin-top: 0.5rem; padding: 0.5rem 1rem; background: #4caf50; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        Download Episode
+      </button>
+    `;
+  }, 3000);
+}
+
+function handleGenealogyUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const status = document.getElementById('status');
+  status.className = 'status show';
+  status.innerHTML = `<strong>Processing ${file.name}...</strong><br>Extracting family information...`;
+  
+  // In real app, this would:
+  // 1. Parse GEDCOM/PDF/text file
+  // 2. Extract person data
+  // 3. Create new ancestor profiles
+  // 4. Generate initial memories
+  
+  setTimeout(() => {
+    status.innerHTML = `<strong>✅ Import Complete!</strong><br>Found 12 ancestors ready to chat.`;
+  }, 2000);
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+  // Any initialization code here
+});
+</script>
+
+</body>
+</html>

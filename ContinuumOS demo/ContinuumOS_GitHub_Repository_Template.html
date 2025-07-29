@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - GitHub Repository Structure Template</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #0a0a1a;
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
+  
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 3rem;
+    text-align: center;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin: 0;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .structure-visual {
+    background: #0f0f1f;
+    border: 2px solid #667eea;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    font-family: 'SF Mono', Monaco, monospace;
+  }
+  
+  .folder {
+    color: #667eea;
+    font-weight: 600;
+  }
+  
+  .file {
+    color: #58d1eb;
+  }
+  
+  .description {
+    color: #888;
+    font-style: italic;
+    margin-left: 2rem;
+  }
+  
+  .file-template {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .file-template h3 {
+    color: #f093fb;
+    margin-top: 0;
+  }
+  
+  pre {
+    background: #0f0f1f;
+    border: 1px solid #2a2a3e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    color: #58d1eb;
+    margin: 1rem 0;
+    position: relative;
+  }
+  
+  .copy-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  
+  .phase-box {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+    border: 2px solid #667eea;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .command-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .command-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+  }
+  
+  .command-card h4 {
+    color: #667eea;
+    margin-top: 0;
+  }
+  
+  @media (max-width: 768px) {
+    .structure-visual { font-size: 0.8rem; padding: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GitHub Repository Structure</h1>
+  <p style="color: #888; margin-top: 1rem;">Professional folder organization for ContinuumOS</p>
+</div>
+
+<div class="container">
+  <div class="structure-visual">
+    <pre>
+<span class="folder">continuum-os/</span>
+├── <span class="file">README.md</span>              <span class="description"># Project overview & setup instructions</span>
+├── <span class="file">.gitignore</span>             <span class="description"># Files to ignore (secrets, node_modules)</span>
+├── <span class="file">.env.example</span>          <span class="description"># Template for environment variables</span>
+├── <span class="file">LICENSE</span>                <span class="description"># MIT or your chosen license</span>
+│
+├── <span class="folder">apps/</span>                  <span class="description"># All applications</span>
+│   ├── <span class="folder">web/</span>               <span class="description"># Main website (Next.js)</span>
+│   │   ├── <span class="file">package.json</span>
+│   │   ├── <span class="folder">app/</span>
+│   │   ├── <span class="folder">components/</span>
+│   │   └── <span class="folder">public/</span>
+│   │
+│   ├── <span class="folder">api/</span>               <span class="description"># Backend API (FastAPI)</span>
+│   │   ├── <span class="file">main.py</span>
+│   │   ├── <span class="file">requirements.txt</span>
+│   │   ├── <span class="folder">routers/</span>
+│   │   └── <span class="folder">services/</span>
+│   │
+│   └── <span class="folder">admin/</span>             <span class="description"># Admin dashboard</span>
+│
+├── <span class="folder">packages/</span>              <span class="description"># Shared code</span>
+│   ├── <span class="folder">ui/</span>                <span class="description"># Shared React components</span>
+│   ├── <span class="folder">database/</span>          <span class="description"># Database schemas (Prisma)</span>
+│   ├── <span class="folder">ai-core/</span>           <span class="description"># AI/LLM integrations</span>
+│   └── <span class="folder">utils/</span>             <span class="description"># Shared utilities</span>
+│
+├── <span class="folder">services/</span>              <span class="description"># Microservices</span>
+│   ├── <span class="folder">ocr/</span>               <span class="description"># OCR processing service</span>
+│   ├── <span class="folder">voice-clone/</span>       <span class="description"># Voice cloning service</span>
+│   ├── <span class="folder">avatar-gen/</span>        <span class="description"># Avatar generation</span>
+│   └── <span class="folder">memory-processor/</span>  <span class="description"># Memory extraction</span>
+│
+├── <span class="folder">infrastructure/</span>        <span class="description"># DevOps & deployment</span>
+│   ├── <span class="folder">terraform/</span>         <span class="description"># Infrastructure as code</span>
+│   ├── <span class="folder">k8s/</span>               <span class="description"># Kubernetes configs</span>
+│   └── <span class="file">docker-compose.yml</span>  <span class="description"># Local development</span>
+│
+├── <span class="folder">docs/</span>                  <span class="description"># Documentation</span>
+│   ├── <span class="file">API.md</span>             <span class="description"># API documentation</span>
+│   ├── <span class="file">ARCHITECTURE.md</span>    <span class="description"># System design</span>
+│   ├── <span class="file">DEPLOYMENT.md</span>      <span class="description"># Deployment guide</span>
+│   └── <span class="folder">demos/</span>             <span class="description"># Your HTML demos</span>
+│       ├── <span class="file">index.html</span>     <span class="description"># Links to all demos</span>
+│       └── <span class="file">*.html</span>         <span class="description"># All your showcase files</span>
+│
+├── <span class="folder">.github/</span>               <span class="description"># GitHub specific</span>
+│   ├── <span class="folder">workflows/</span>         <span class="description"># GitHub Actions</span>
+│   │   ├── <span class="file">deploy.yml</span>
+│   │   └── <span class="file">test.yml</span>
+│   └── <span class="file">FUNDING.yml</span>        <span class="description"># Sponsorship info</span>
+│
+└── <span class="folder">scripts/</span>               <span class="description"># Utility scripts</span>
+    ├── <span class="file">setup.sh</span>           <span class="description"># Initial setup</span>
+    ├── <span class="file">seed-data.py</span>       <span class="description"># Demo data</span>
+    └── <span class="file">deploy.sh</span>          <span class="description"># Deployment script</span>
+    </pre>
+  </div>
+
+  <div class="phase-box">
+    <h2 style="color: white; margin-top: 0;">📁 Essential Files to Create First</h2>
+    
+    <div class="file-template">
+      <h3>README.md</h3>
+      <pre><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><code># ContinuumOS - Where Memory Becomes Immortal 🌟
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR-USERNAME/continuum-os)
+
+## 🚀 Overview
+ContinuumOS enables conversations with deceased relatives through AI-powered avatars, preserving family memories and wisdom across generations.
+
+## 🎯 Features
+- 🧠 AI-powered personality recreation
+- 🎤 Voice cloning from samples
+- 👤 Visual avatar generation
+- 💬 Natural conversations
+- 🔒 Secure memory storage
+
+## 🛠️ Tech Stack
+- **Frontend:** Next.js, React, TypeScript
+- **Backend:** FastAPI, Python
+- **AI/ML:** OpenAI GPT-4, ElevenLabs, Stable Diffusion
+- **Database:** Neo4j (relationships), Pinecone (vectors)
+- **Infrastructure:** Docker, Vercel, AWS
+
+## 📦 Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/YOUR-USERNAME/continuum-os.git
+cd continuum-os
+
+# Run setup script
+./scripts/setup.sh
+
+# Start development
+docker-compose up
+```
+
+## 📁 Project Structure
+See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed structure.
+
+## 🤝 Contributing
+We welcome contributions! Please see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## 📄 License
+MIT License - see [LICENSE](LICENSE)
+
+## 🙏 Acknowledgments
+Built with love for preserving human connections beyond life.</code></pre>
+    </div>
+
+    <div class="file-template">
+      <h3>.gitignore</h3>
+      <pre><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><code># Environment variables
+.env
+.env.local
+.env.production
+
+# Dependencies
+node_modules/
+venv/
+__pycache__/
+*.pyc
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+*.egg-info/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+
+# Testing
+coverage/
+.pytest_cache/
+.coverage
+
+# Uploads (local development)
+uploads/
+temp/
+
+# Database
+*.db
+*.sqlite
+neo4j/
+
+# Secrets - NEVER commit these!
+*.pem
+*.key
+credentials.json
+service-account.json</code></pre>
+    </div>
+
+    <div class="file-template">
+      <h3>.env.example</h3>
+      <pre><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><code># Copy this to .env and fill in your values
+
+# OpenAI
+OPENAI_API_KEY=sk-...
+
+# Pinecone
+PINECONE_API_KEY=...
+PINECONE_ENVIRONMENT=gcp-starter
+
+# ElevenLabs
+ELEVENLABS_API_KEY=...
+
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/continuum
+NEO4J_URI=bolt://localhost:7687
+NEO4J_USER=neo4j
+NEO4J_PASSWORD=password
+
+# Redis
+REDIS_URL=redis://localhost:6379
+
+# AWS (optional for production)
+AWS_ACCESS_KEY_ID=...
+AWS_SECRET_ACCESS_KEY=...
+AWS_REGION=us-east-1
+S3_BUCKET=continuum-heritage
+
+# Stripe (optional)
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# App
+NEXT_PUBLIC_API_URL=http://localhost:8000
+JWT_SECRET=your-secret-key-here</code></pre>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <h2 style="color: white; margin-top: 0;">🚀 Quick Commands</h2>
+    
+    <div class="command-grid">
+      <div class="command-card">
+        <h4>Initial Setup</h4>
+        <pre><code># Create all folders
+mkdir -p apps/{web,api,admin}
+mkdir -p packages/{ui,database,ai-core,utils}
+mkdir -p services/{ocr,voice-clone,avatar-gen}
+mkdir -p infrastructure/{terraform,k8s}
+mkdir -p docs/demos
+mkdir -p .github/workflows
+mkdir -p scripts</code></pre>
+      </div>
+      
+      <div class="command-card">
+        <h4>Move Your HTML Files</h4>
+        <pre><code># Move to demos folder
+mv *.html docs/demos/
+
+# Create index
+cd docs/demos
+ls *.html > index.txt</code></pre>
+      </div>
+      
+      <div class="command-card">
+        <h4>Initialize Git</h4>
+        <pre><code># Initialize repository
+git init
+git add .
+git commit -m "Initial commit"
+
+# Add remote
+git remote add origin https://github.com/YOUR/continuum-os.git
+git push -u origin main</code></pre>
+      </div>
+      
+      <div class="command-card">
+        <h4>Create Monorepo Config</h4>
+        <pre><code># package.json in root
+{
+  "name": "continuum-os",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test"
+  }
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-box">
+    <h2 style="color: white; margin-top: 0;">📋 Repository Setup Checklist</h2>
+    
+    <ul style="list-style: none; padding: 0;">
+      <li style="padding: 0.5rem 0;">☐ Create folder structure</li>
+      <li style="padding: 0.5rem 0;">☐ Add README.md with project description</li>
+      <li style="padding: 0.5rem 0;">☐ Add .gitignore to protect secrets</li>
+      <li style="padding: 0.5rem 0;">☐ Create .env.example template</li>
+      <li style="padding: 0.5rem 0;">☐ Move HTML files to docs/demos</li>
+      <li style="padding: 0.5rem 0;">☐ Initialize git repository</li>
+      <li style="padding: 0.5rem 0;">☐ Make first commit</li>
+      <li style="padding: 0.5rem 0;">☐ Push to GitHub</li>
+      <li style="padding: 0.5rem 0;">☐ Set up branch protection for main</li>
+      <li style="padding: 0.5rem 0;">☐ Add collaborators if needed</li>
+    </ul>
+  </div>
+
+  <div class="phase-box" style="background: rgba(76, 175, 80, 0.1); border-color: #4caf50;">
+    <h2 style="color: #4caf50; margin-top: 0;">✅ Why This Structure?</h2>
+    
+    <ul>
+      <li><strong>Monorepo:</strong> Everything in one place, easy to manage</li>
+      <li><strong>apps/:</strong> Separate concerns (web, api, admin)</li>
+      <li><strong>packages/:</strong> Share code between apps</li>
+      <li><strong>services/:</strong> Microservices can scale independently</li>
+      <li><strong>Clear separation:</strong> Frontend, backend, infrastructure</li>
+      <li><strong>Professional:</strong> Same structure as big tech companies</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+function copyToClipboard(button) {
+  const codeBlock = button.parentElement.querySelector('code');
+  const text = codeBlock.textContent;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    button.textContent = 'Copied!';
+    button.style.background = '#4caf50';
+    
+    setTimeout(() => {
+      button.textContent = 'Copy';
+      button.style.background = '#667eea';
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>

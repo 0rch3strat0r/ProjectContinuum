@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - Team Skills Assessment Checklist</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #0a0a1a;
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
+  
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 3rem;
+    text-align: center;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin: 0;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .role-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all 0.3s ease;
+  }
+  
+  .role-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    transform: translateY(-5px);
+  }
+  
+  .role-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .role-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-right: 1rem;
+  }
+  
+  .role-title h2 {
+    margin: 0;
+    color: #f093fb;
+    font-size: 1.5rem;
+  }
+  
+  .role-level {
+    font-size: 0.9rem;
+    color: #888;
+  }
+  
+  .skill-category {
+    margin-bottom: 1.5rem;
+  }
+  
+  .skill-category h3 {
+    color: #667eea;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .skill-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .skill-item {
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .skill-checkbox {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #667eea;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+  }
+  
+  .skill-checkbox:hover {
+    background: rgba(102, 126, 234, 0.2);
+  }
+  
+  .skill-checkbox.checked {
+    background: #667eea;
+  }
+  
+  .skill-checkbox.checked::after {
+    content: '✓';
+    color: white;
+    font-weight: bold;
+  }
+  
+  .skill-level {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-left: auto;
+  }
+  
+  .level-required { background: #ff6b6b; color: white; }
+  .level-important { background: #f093fb; color: white; }
+  .level-nice { background: #4ecdc4; color: white; }
+  
+  .summary-section {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+    border: 2px solid #667eea;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .summary-card {
+    text-align: center;
+  }
+  
+  .summary-percentage {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #667eea, #764ba2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .summary-label {
+    color: #888;
+    font-size: 0.9rem;
+  }
+  
+  .team-gaps {
+    background: rgba(255, 67, 54, 0.1);
+    border: 2px solid #ff4336;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .team-gaps h3 {
+    color: #ff4336;
+    margin-top: 0;
+  }
+  
+  .hiring-priority {
+    background: rgba(76, 175, 80, 0.1);
+    border: 2px solid #4caf50;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .hiring-priority h3 {
+    color: #4caf50;
+    margin-top: 0;
+  }
+  
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    justify-content: center;
+  }
+  
+  .action-button {
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .action-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+  }
+  
+  .phase-requirements {
+    margin-top: 3rem;
+  }
+  
+  .phase-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .phase-badge {
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    color: white;
+  }
+  
+  .phase-0 { background: #ff6b6b; }
+  .phase-1 { background: #4ecdc4; }
+  .phase-2 { background: #667eea; }
+  .phase-3 { background: #f093fb; }
+  
+  @media (max-width: 768px) {
+    .role-grid { grid-template-columns: 1fr; }
+    .action-buttons { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ContinuumOS Team Skills Assessment</h1>
+  <p style="color: #888; margin-top: 1rem;">Evaluate your team's readiness for each development phase</p>
+</div>
+
+<div class="container">
+  <div class="role-grid">
+    <!-- Full Stack Developer -->
+    <div class="role-card">
+      <div class="role-header">
+        <div class="role-icon">👨‍💻</div>
+        <div class="role-title">
+          <h2>Full Stack Developer</h2>
+          <div class="role-level">Core Team Member</div>
+        </div>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🔴 Required Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Python (FastAPI, asyncio)</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>React/Next.js + TypeScript</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>REST API Design</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Database Design (SQL/NoSQL)</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🟡 Important Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>WebSocket/Real-time</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Docker & Containerization</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Authentication (OAuth, JWT)</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🟢 Nice to Have</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>GraphQL</span>
+            <span class="skill-level level-nice">Nice</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Mobile Dev (React Native)</span>
+            <span class="skill-level level-nice">Nice</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- AI/ML Engineer -->
+    <div class="role-card">
+      <div class="role-header">
+        <div class="role-icon">🤖</div>
+        <div class="role-title">
+          <h2>AI/ML Engineer</h2>
+          <div class="role-level">Core Team Member</div>
+        </div>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🔴 Required Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>LLM APIs (OpenAI, Anthropic)</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Vector Databases</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>RAG Implementation</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Python ML Libraries</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🟡 Important Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Prompt Engineering</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Fine-tuning LLMs</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Embeddings & Similarity</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🟢 Nice to Have</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Stable Diffusion</span>
+            <span class="skill-level level-nice">Nice</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Voice Cloning Tech</span>
+            <span class="skill-level level-nice">Nice</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- DevOps Engineer -->
+    <div class="role-card">
+      <div class="role-header">
+        <div class="role-icon">🚀</div>
+        <div class="role-title">
+          <h2>DevOps Engineer</h2>
+          <div class="role-level">Critical for Scale</div>
+        </div>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🔴 Required Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>AWS/Azure/GCP</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Docker & Kubernetes</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>CI/CD Pipelines</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Infrastructure as Code</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🟡 Important Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Monitoring & Logging</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Security Best Practices</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Cost Optimization</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Unity/VR Developer -->
+    <div class="role-card">
+      <div class="role-header">
+        <div class="role-icon">🥽</div>
+        <div class="role-title">
+          <h2>Unity/VR Developer</h2>
+          <div class="role-level">Phase 2 Critical</div>
+        </div>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🔴 Required Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Unity 3D Development</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>C# Programming</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>VR SDKs (Oculus, OpenXR)</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>3D Animation Systems</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🟡 Important Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Shader Programming</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Performance Optimization</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Multiplayer/Networking</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Data Engineer -->
+    <div class="role-card">
+      <div class="role-header">
+        <div class="role-icon">📊</div>
+        <div class="role-title">
+          <h2>Data Engineer</h2>
+          <div class="role-level">Scale & Analytics</div>
+        </div>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🔴 Required Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Graph Databases (Neo4j)</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Vector Search Systems</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>ETL/Data Pipelines</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Data Modeling</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🟡 Important Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Real-time Processing</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Data Privacy/GDPR</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Security Engineer -->
+    <div class="role-card">
+      <div class="role-header">
+        <div class="role-icon">🔐</div>
+        <div class="role-title">
+          <h2>Security Engineer</h2>
+          <div class="role-level">Phase 3 Critical</div>
+        </div>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🔴 Required Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Security Auditing</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Encryption & Key Mgmt</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>GDPR/CCPA Compliance</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Penetration Testing</span>
+            <span class="skill-level level-required">Required</span>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="skill-category">
+        <h3>🟡 Important Skills</h3>
+        <ul class="skill-list">
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Zero Trust Architecture</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+          <li class="skill-item">
+            <div class="skill-checkbox" onclick="toggleSkill(this)"></div>
+            <span>Blockchain/Immutability</span>
+            <span class="skill-level level-important">Important</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-requirements">
+    <h2 style="color: #f093fb; margin-bottom: 1rem;">Skills Required by Phase</h2>
+    
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-badge phase-0">Phase 0</span>
+        <h3 style="margin: 0;">Foundation (1-2 people)</h3>
+      </div>
+      <p>Full Stack Developer with basic DevOps knowledge can handle initial setup, API creation, and infrastructure basics.</p>
+    </div>
+    
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-badge phase-1">Phase 1</span>
+        <h3 style="margin: 0;">Core Pipeline (2-3 people)</h3>
+      </div>
+      <p>Add AI/ML Engineer for LLM integration, RAG pipeline, and voice cloning. Full Stack continues frontend/backend.</p>
+    </div>
+    
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-badge phase-2">Phase 2</span>
+        <h3 style="margin: 0;">VR & Interaction (4-5 people)</h3>
+      </div>
+      <p>Critical: Add Unity/VR Developer. DevOps becomes essential for scaling. Consider dedicated Data Engineer.</p>
+    </div>
+    
+    <div class="phase-card">
+      <div class="phase-header">
+        <span class="phase-badge phase-3">Phase 3</span>
+        <h3 style="margin: 0;">Production & Compliance (6+ people)</h3>
+      </div>
+      <p>Security Engineer required for compliance. Mobile developer for React Native. Consider specialized roles.</p>
+    </div>
+  </div>
+
+  <div class="summary-section">
+    <h2 style="color: white; margin-top: 0;">Team Readiness Summary</h2>
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-percentage" id="overall-percentage">0%</div>
+        <div class="summary-label">Overall Readiness</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-percentage" id="required-percentage">0%</div>
+        <div class="summary-label">Required Skills</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-percentage" id="roles-filled">0/6</div>
+        <div class="summary-label">Roles Covered</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-percentage" id="phase-ready">P-0</div>
+        <div class="summary-label">Ready for Phase</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="team-gaps">
+    <h3>🚨 Critical Gaps Identified</h3>
+    <ul id="gap-list">
+      <li>No skills selected yet - complete assessment above</li>
+    </ul>
+  </div>
+
+  <div class="hiring-priority">
+    <h3>📋 Hiring Priorities</h3>
+    <ol id="hiring-list">
+      <li><strong>Full Stack Developer</strong> - Needed immediately for Phase 0</li>
+      <li><strong>AI/ML Engineer</strong> - Critical for Phase 1 LLM integration</li>
+      <li><strong>Unity/VR Developer</strong> - Required before Phase 2</li>
+    </ol>
+  </div>
+
+  <div class="action-buttons">
+    <button class="action-button" onclick="exportAssessment()">📄 Export Report</button>
+    <button class="action-button" onclick="resetAssessment()">🔄 Reset Assessment</button>
+    <button class="action-button" onclick="generateHiringPlan()">📊 Generate Hiring Plan</button>
+  </div>
+</div>
+
+<script>
+  let skillsData = {};
+  
+  function toggleSkill(checkbox) {
+    checkbox.classList.toggle('checked');
+    updateSummary();
+  }
+  
+  function updateSummary() {
+    const allSkills = document.querySelectorAll('.skill-checkbox');
+    const checkedSkills = document.querySelectorAll('.skill-checkbox.checked');
+    const requiredSkills = document.querySelectorAll('.level-required').length;
+    const checkedRequired = document.querySelectorAll('.level-required').length;
+    
+    // Calculate percentages
+    const overallPercentage = Math.round((checkedSkills.length / allSkills.length) * 100);
+    const requiredPercentage = Math.round((checkedRequired / requiredSkills) * 100);
+    
+    // Update display
+    document.getElementById('overall-percentage').textContent = overallPercentage + '%';
+    document.getElementById('required-percentage').textContent = requiredPercentage + '%';
+    
+    // Calculate roles filled
+    const roleCards = document.querySelectorAll('.role-card');
+    let rolesFilled = 0;
+    roleCards.forEach(card => {
+      const requiredInRole = card.querySelectorAll('.level-required').length;
+      const checkedInRole = card.querySelectorAll('.skill-checkbox.checked').length;
+      if (checkedInRole >= requiredInRole * 0.8) rolesFilled++;
+    });
+    document.getElementById('roles-filled').textContent = rolesFilled + '/6';
+    
+    // Determine phase readiness
+    let phaseReady = 'P-0';
+    if (rolesFilled >= 2) phaseReady = 'P-1';
+    if (rolesFilled >= 4) phaseReady = 'P-2';
+    if (rolesFilled >= 6) phaseReady = 'P-3';
+    document.getElementById('phase-ready').textContent = phaseReady;
+    
+    // Update gaps
+    updateGaps();
+  }
+  
+  function updateGaps() {
+    const gapList = document.getElementById('gap-list');
+    gapList.innerHTML = '';
+    
+    const criticalGaps = [];
+    
+    // Check each role for critical missing skills
+    document.querySelectorAll('.role-card').forEach(card => {
+      const roleName = card.querySelector('h2').textContent;
+      const uncheckedRequired = card.querySelectorAll('.skill-item:has(.level-required):not(:has(.checked))');
+      
+      if (uncheckedRequired.length > 0) {
+        uncheckedRequired.forEach(skill => {
+          const skillName = skill.querySelector('span:nth-child(2)').textContent;
+          criticalGaps.push(`${roleName}: ${skillName}`);
+        });
+      }
+    });
+    
+    if (criticalGaps.length === 0) {
+      gapList.innerHTML = '<li style="color: #4caf50;">✅ All critical skills covered!</li>';
+    } else {
+      criticalGaps.forEach(gap => {
+        const li = document.createElement('li');
+        li.textContent = gap;
+        gapList.appendChild(li);
+      });
+    }
+  }
+  
+  function exportAssessment() {
+    const assessment = {
+      date: new Date().toISOString(),
+      skills: [],
+      summary: {
+        overall: document.getElementById('overall-percentage').textContent,
+        required: document.getElementById('required-percentage').textContent,
+        roles: document.getElementById('roles-filled').textContent,
+        phase: document.getElementById('phase-ready').textContent
+      }
+    };
+    
+    document.querySelectorAll('.skill-item').forEach(item => {
+      assessment.skills.push({
+        skill: item.querySelector('span:nth-child(2)').textContent,
+        checked: item.querySelector('.skill-checkbox').classList.contains('checked'),
+        level: item.querySelector('.skill-level').textContent
+      });
+    });
+    
+    // Download as JSON
+    const dataStr = JSON.stringify(assessment, null, 2);
+    const dataBlob = new Blob([dataStr], {type: 'application/json'});
+    const url = URL.createObjectURL(dataBlob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'continuum-skills-assessment.json';
+    link.click();
+  }
+  
+  function resetAssessment() {
+    document.querySelectorAll('.skill-checkbox').forEach(checkbox => {
+      checkbox.classList.remove('checked');
+    });
+    updateSummary();
+  }
+  
+  function generateHiringPlan() {
+    const hiringList = document.getElementById('hiring-list');
+    hiringList.innerHTML = '';
+    
+    // Analyze gaps and create hiring priorities
+    const priorities = [
+      { role: 'Full Stack Developer', reason: 'Core platform development', phase: 'P-0' },
+      { role: 'AI/ML Engineer', reason: 'LLM and voice integration', phase: 'P-1' },
+      { role: 'DevOps Engineer', reason: 'Production infrastructure', phase: 'P-1' },
+      { role: 'Unity/VR Developer', reason: 'VR/AR experiences', phase: 'P-2' },
+      { role: 'Data Engineer', reason: 'Scale data systems', phase: 'P-2' },
+      { role: 'Security Engineer', reason: 'Compliance and protection', phase: 'P-3' }
+    ];
+    
+    priorities.forEach((priority, index) => {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${priority.role}</strong> - ${priority.reason} (${priority.phase})`;
+      hiringList.appendChild(li);
+    });
+  }
+  
+  // Initialize
+  updateSummary();
+</script>
+
+</body>
+</html>

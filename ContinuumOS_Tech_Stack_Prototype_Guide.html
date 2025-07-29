@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>ContinuumOS / LegacySphere – Full Tech‑Stack & Prototype Setup</title>
+<style>
+ body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:2rem;line-height:1.45;color:#333}
+ h1{color:#003366;font-size:1.8rem;margin-bottom:1.2rem}
+ h2{color:#003366;font-size:1.35rem;margin:1.4rem 0 .6rem}
+ h3{font-size:1.1rem;margin:.9rem 0 .4rem}
+ table{width:100%;border-collapse:collapse;font-size:.94rem;margin-bottom:1.6rem}
+ th,td{border:1px solid #c8d2e0;padding:.42rem .6rem;text-align:left}
+ th{background:#f3f8ff}
+ code{background:#eef2ff;padding:.1rem .25rem;border-radius:4px;font-size:.9rem}
+ pre{background:#f8f9fd;border:1px solid #d3d9e8;padding:.8rem;overflow:auto;font-size:.88rem}
+ .phase{font-weight:bold;color:#0b3d91}
+ .section{margin-top:2.2rem}
+ @media print{body{padding:1rem}h1{font-size:1.5rem}h2{font-size:1.2rem}}
+ @media (max-width:768px){body{padding:1rem}table{font-size:.8rem;overflow-x:auto;display:block}pre{font-size:.8rem}}
+</style>
+</head>
+<body>
+
+<h1>ContinuumOS / LegacySphere – Tech‑Stack & Prototype Setup Guide</h1>
+
+<h2>1 . Full Stack Checklist (ordered by pipeline layer & phase)</h2>
+<table>
+<tr>
+ <th>#</th><th>Layer</th><th>Tool / SDK</th><th>Phase*</th><th>Purpose</th><th>Vendor / Licence</th>
+</tr>
+<!-- Ingestion -->
+<tr><td>1</td><td>OCR</td><td>Tesseract OCR</td><td class="phase">P‑1</td><td>Scan diaries → text</td><td>Apache 2.0</td></tr>
+<tr><td>2</td><td>Transcode</td><td>FFmpeg</td><td class="phase">P‑1</td><td>Audio / video normalizer</td><td>LGPL</td></tr>
+<tr><td>3</td><td>Graph DB</td><td>Neo4j Desktop</td><td class="phase">P‑1</td><td>Family person‑nodes</td><td>GPL / Free</td></tr>
+<tr><td>4</td><td>Vector DB</td><td>Pinecone Starter</td><td class="phase">P‑1</td><td>Semantic search</td><td>Free tier</td></tr>
+<!-- Gen‑AI -->
+<tr><td>5</td><td>Embeddings</td><td>sentence‑transformers MiniLM</td><td class="phase">P‑1</td><td>Create vectors</td><td>MIT</td></tr>
+<tr><td>6</td><td>LLM API</td><td>OpenAI GPT‑4o</td><td class="phase">P‑1</td><td>Persona dialogue</td><td>Usage $</td></tr>
+<tr><td>7</td><td>RAG Orchestrator</td><td>LangChain</td><td class="phase">P‑1</td><td>Vector → prompt pipe</td><td>MIT</td></tr>
+<tr><td>8</td><td>Photo→Video</td><td>Stable Diffusion + LoRA</td><td class="phase">P‑1</td><td>Talking‑head frames</td><td>CreativeML</td></tr>
+<tr><td>9</td><td>Lip‑sync</td><td>SadTalker (local) / D‑ID API</td><td class="phase">P‑1</td><td>Sync lips to audio</td><td>MIT / SaaS</td></tr>
+<tr><td>10</td><td>TTS</td><td>ElevenLabs / XTTS 2</td><td class="phase">P‑1</td><td>Clone ancestor voice</td><td>Usage $ / OSS</td></tr>
+<!-- Interaction -->
+<tr><td>11</td><td>Pose (JS)</td><td>MediaPipe Tasks WASM</td><td class="phase">P‑2</td><td>Head & hand in browser</td><td>Apache 2.0</td></tr>
+<tr><td>12</td><td>Pose (VR)</td><td>Meta Interaction SDK</td><td class="phase">P‑2</td><td>Quest hand/pose</td><td>Free</td></tr>
+<tr><td>13</td><td>Behavior</td><td>Unity Animator + NodeCanvas</td><td class="phase">P‑2</td><td>Gesture → animation</td><td>Unity / $95 seat</td></tr>
+<!-- Front‑end -->
+<tr><td>14</td><td>VR Engine</td><td>Unity 2022 LTS</td><td class="phase">P‑2</td><td>Quest/WebGL builds</td><td>Free < $100k rev</td></tr>
+<tr><td>15</td><td>Web UI</td><td>React 18 + Next.js</td><td class="phase">P‑1</td><td>Upload portal + chat</td><td>MIT</td></tr>
+<tr><td>16</td><td>WebRTC</td><td>simple‑peer</td><td class="phase">P‑2</td><td>FaceTime‑style calls</td><td>MIT</td></tr>
+<tr><td>17</td><td>Mobile share</td><td>Expo React Native</td><td class="phase">P‑3</td><td>Share‑to‑App ext.</td><td>MIT</td></tr>
+<tr><td>18</td><td>Feature flags</td><td>Unleash Cloud / OSS</td><td class="phase">P‑2</td><td>Gradual rollout</td><td>Free / \$80 mo</td></tr>
+<!-- Publish -->
+<tr><td>19</td><td>Podcast RSS</td><td>RSSHub fork</td><td class="phase">P‑3</td><td>Generate feed</td><td>MIT</td></tr>
+<tr><td>20</td><td>YouTube API</td><td>YouTube Data v3</td><td class="phase">P‑3</td><td>Upload videos</td><td>Free quota</td></tr>
+<tr><td>21</td><td>Hologram encode</td><td>Looking‑Glass Studio</td><td class="phase">P‑3</td><td>mp4 → light‑field</td><td>Free</td></tr>
+<!-- DevOps -->
+<tr><td>22</td><td>API FW</td><td>FastAPI</td><td class="phase">P‑1</td><td>Ingestion endpoints</td><td>MIT</td></tr>
+<tr><td>23</td><td>Containers</td><td>Docker Compose → ECS</td><td class="phase">P‑0</td><td>Local & cloud deploy</td><td>Apache 2.0</td></tr>
+<tr><td>24</td><td>IaC</td><td>Terraform AWS</td><td class="phase">P‑0</td><td>Infra as code</td><td>MPL 2.0</td></tr>
+<tr><td>25</td><td>CI/CD</td><td>GitHub Actions</td><td class="phase">P‑0</td><td>Test & deploy</td><td>Free tier</td></tr>
+<tr><td>26</td><td>Monitoring</td><td>Grafana Cloud Free</td><td class="phase">P‑2</td><td>Metrics & alerts</td><td>Free 10 K series</td></tr>
+<tr><td>27</td><td>Billing</td><td>Stripe Billing</td><td class="phase">P‑2</td><td>Subs & coupons</td><td>2.9 % + 30¢</td></tr>
+<!-- Compliance -->
+<tr><td>28</td><td>Consent ledger</td><td>DynamoDB + S3</td><td class="phase">P‑3</td><td>Immutable approvals</td><td>AWS pay‑as‑go</td></tr>
+<tr><td>29</td><td>PII scan</td><td>AWS Macie Basic</td><td class="phase">P‑3</td><td>Data classification</td><td>Free &lt; 1 GB</td></tr>
+<tr><td>30</td><td>Content filter</td><td>OpenAI Moderation API</td><td class="phase">P‑2</td><td>Blocks disallowed text</td><td>Low cost</td></tr>
+</table>
+
+<p style="font-size:.85rem;color:#555;">*Phase key – P‑0: foundations • P‑1: Core pipeline • P‑2: VR & interaction • P‑3: Multichannel + compliance</p>
+
+<!-- ===================================================================== -->
+<div class="section">
+<h2>2 . Quick‑Install Commands (Prototype Bundle)</h2>
+
+<h3>Backend & Storage</h3>
+<pre><code># OCR & graph
+brew install tesseract
+wget https://neo4j.com/offline/community.zip
+unzip community.zip
+
+# Vector DB (Pinecone) – CLI
+pip install pinecone-client
+
+# Python API stack
+python -m venv venv
+source venv/bin/activate
+pip install fastapi[all] langchain sentence-transformers openai uvicorn
+</code></pre>
+
+<h3>Local Docker Compose (API + Ingestion)</h3>
+<pre><code># docker-compose.yml
+version: "3.9"
+services:
+  api:
+    build: ./api
+    ports: ["8000:8000"]
+    env_file: .env
+    depends_on: [vector]
+  vector:
+    image: pinecone/server:latest
+    ports: ["9000:9000"]
+</code></pre>
+
+<h3>Front‑end</h3>
+<pre><code># React + WebRTC
+npx create-next-app continuum-web
+cd continuum-web
+npm install simple-peer @unleash/proxy-client
+npm run dev
+</code></pre>
+
+<h3>Unity (VR)</h3>
+<pre><code># Unity Hub → install Unity 2022.3 LTS (URP template)
+# In project:
+# - Import Oculus Integration from Asset Store
+# - Import Ready Player Me SDK (free)
+</code></pre>
+
+<h3>Feature Flags (Unleash Cloud)</h3>
+<pre><code># Sign up at https://app.unleash-hosted.com
+# Create Project: "Continuum"
+# Add feature flag: feature.webrtc_chat (disabled by default)
+# Copy proxy key into .env for React & Unity SDKs
+</code></pre>
+</div>
+
+<!-- ===================================================================== -->
+<div class="section">
+<h2>3 . Starter Sprint Board (Kanban)</h2>
+
+<h3>Backlog → Prototype (8 weeks)</h3>
+<ul>
+<li><strong>Backlog</strong><br>
+  ◻️ Define ingestion schema (photo, text, audio)<br>
+  ◻️ Design persona prompt template<br>
+  ◻️ Set up AWS account & IAM roles
+</li><br>
+<li><strong>In Progress</strong><br>
+  ◻️ Tesseract OCR micro‑service (FastAPI)<br>
+  ◻️ Pinecone vector loader<br>
+  ◻️ React upload UI
+</li><br>
+<li><strong>Review</strong><br>
+  ◻️ LLM RAG query returns correct diary paragraph<br>
+  ◻️ Stable Diffusion talking‑head renders under 6 s
+</li><br>
+<li><strong>Done</strong><br>
+  ⬜ *(empty — your team moves cards here)*
+</li>
+</ul>
+<p style="font-size:.85rem;color:#555;">Copy the bullet lists into GitHub Projects or Trello columns.</p>
+</div>
+
+</body>
+</html>

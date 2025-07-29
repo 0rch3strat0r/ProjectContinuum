@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - Cost Breakdown Calculator</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #0a0a1a;
+    color: #e0e0e0;
+    min-height: 100vh;
+  }
+  
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 3rem;
+    text-align: center;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin: 0;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+  
+  .container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .calculator-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  .input-section, .output-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+  }
+  
+  .input-section h2 {
+    color: #667eea;
+    margin-top: 0;
+  }
+  
+  .output-section h2 {
+    color: #f093fb;
+    margin-top: 0;
+  }
+  
+  .input-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #aaa;
+    font-size: 0.9rem;
+  }
+  
+  .input-group input[type="range"] {
+    width: 100%;
+    -webkit-appearance: none;
+    height: 8px;
+    background: #2a2a3e;
+    border-radius: 5px;
+    outline: none;
+  }
+  
+  .input-group input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: #667eea;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .value-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 0.5rem;
+  }
+  
+  .value-number {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #667eea;
+  }
+  
+  .cost-category {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .cost-category h3 {
+    margin-top: 0;
+    color: #f093fb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .cost-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  
+  .cost-breakdown {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 0.5rem;
+  }
+  
+  .cost-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.3rem 0;
+  }
+  
+  .total-cost {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(240, 147, 251, 0.2) 100%);
+    border: 2px solid #667eea;
+    border-radius: 20px;
+    padding: 2rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+  
+  .total-amount {
+    font-size: 3rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .cost-phases {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 3rem;
+  }
+  
+  .phase-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .phase-card h4 {
+    color: #667eea;
+    margin-top: 0;
+  }
+  
+  .phase-cost {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #f093fb;
+  }
+  
+  .savings-tips {
+    background: rgba(76, 175, 80, 0.1);
+    border: 2px solid #4caf50;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .savings-tips h3 {
+    color: #4caf50;
+    margin-top: 0;
+  }
+  
+  .comparison-table {
+    width: 100%;
+    margin-top: 3rem;
+    border-collapse: collapse;
+  }
+  
+  .comparison-table th {
+    background: rgba(102, 126, 234, 0.2);
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 2px solid #667eea;
+  }
+  
+  .comparison-table td {
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .plan-badge {
+    display: inline-block;
+    padding: 0.3rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  
+  .plan-prototype { background: #ff6b6b; color: white; }
+  .plan-startup { background: #4ecdc4; color: white; }
+  .plan-growth { background: #667eea; color: white; }
+  .plan-enterprise { background: #f093fb; color: white; }
+  
+  @media (max-width: 768px) {
+    .calculator-grid { grid-template-columns: 1fr; }
+    .cost-phases { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ContinuumOS Cost Calculator</h1>
+  <p style="color: #888; margin-top: 1rem;">Estimate your monthly infrastructure and service costs</p>
+</div>
+
+<div class="container">
+  <div class="calculator-grid">
+    <div class="input-section">
+      <h2>📊 Usage Parameters</h2>
+      
+      <div class="input-group">
+        <label for="users">Active Users</label>
+        <input type="range" id="users" min="0" max="100000" value="1000" step="100">
+        <div class="value-display">
+          <span>Users</span>
+          <span class="value-number" id="users-value">1,000</span>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="ancestors">Total Ancestors Created</label>
+        <input type="range" id="ancestors" min="0" max="50000" value="500" step="50">
+        <div class="value-display">
+          <span>Ancestors</span>
+          <span class="value-number" id="ancestors-value">500</span>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="conversations">Daily Conversations</label>
+        <input type="range" id="conversations" min="0" max="50000" value="2000" step="100">
+        <div class="value-display">
+          <span>Conversations/day</span>
+          <span class="value-number" id="conversations-value">2,000</span>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="storage">Heritage Storage (TB)</label>
+        <input type="range" id="storage" min="0" max="100" value="5" step="1">
+        <div class="value-display">
+          <span>Terabytes</span>
+          <span class="value-number" id="storage-value">5 TB</span>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <label for="video-calls">VR/Video Sessions per Day</label>
+        <input type="range" id="video-calls" min="0" max="5000" value="100" step="10">
+        <div class="value-display">
+          <span>Sessions/day</span>
+          <span class="value-number" id="video-calls-value">100</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="output-section">
+      <h2>💰 Monthly Cost Breakdown</h2>
+      
+      <div class="cost-category">
+        <h3>AI & Processing <span class="cost-amount" id="ai-cost">$0</span></h3>
+        <div class="cost-breakdown">
+          <div class="cost-item">
+            <span>OpenAI GPT-4 API</span>
+            <span id="openai-cost">$0</span>
+          </div>
+          <div class="cost-item">
+            <span>ElevenLabs Voice</span>
+            <span id="elevenlabs-cost">$0</span>
+          </div>
+          <div class="cost-item">
+            <span>D-ID Avatar Generation</span>
+            <span id="did-cost">$0</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cost-category">
+        <h3>Storage & Database <span class="cost-amount" id="storage-cost">$0</span></h3>
+        <div class="cost-breakdown">
+          <div class="cost-item">
+            <span>AWS S3 Storage</span>
+            <span id="s3-cost">$0</span>
+          </div>
+          <div class="cost-item">
+            <span>Pinecone Vector DB</span>
+            <span id="pinecone-cost">$0</span>
+          </div>
+          <div class="cost-item">
+            <span>Neo4j Graph DB</span>
+            <span id="neo4j-cost">$0</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cost-category">
+        <h3>Infrastructure <span class="cost-amount" id="infra-cost">$0</span></h3>
+        <div class="cost-breakdown">
+          <div class="cost-item">
+            <span>AWS ECS/Fargate</span>
+            <span id="ecs-cost">$0</span>
+          </div>
+          <div class="cost-item">
+            <span>CloudFront CDN</span>
+            <span id="cdn-cost">$0</span>
+          </div>
+          <div class="cost-item">
+            <span>Load Balancer</span>
+            <span id="lb-cost">$0</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="cost-category">
+        <h3>Services & Tools <span class="cost-amount" id="services-cost">$0</span></h3>
+        <div class="cost-breakdown">
+          <div class="cost-item">
+            <span>Stripe Processing</span>
+            <span id="stripe-cost">$0</span>
+          </div>
+          <div class="cost-item">
+            <span>Grafana Monitoring</span>
+            <span id="grafana-cost">$0</span>
+          </div>
+          <div class="cost-item">
+            <span>Unleash Features</span>
+            <span id="unleash-cost">$0</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="total-cost">
+        <h3 style="margin-top: 0; color: white;">Total Monthly Cost</h3>
+        <div class="total-amount" id="total-cost">$0</div>
+        <p style="color: #aaa; margin-top: 1rem;">Per User: <span id="per-user-cost">$0</span></p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="cost-phases">
+    <div class="phase-card">
+      <h4>Prototype</h4>
+      <div class="phase-cost">$50-200</div>
+      <p style="font-size: 0.9rem; color: #888;">Basic demo setup</p>
+    </div>
+    <div class="phase-card">
+      <h4>Startup</h4>
+      <div class="phase-cost">$500-1.5K</div>
+      <p style="font-size: 0.9rem; color: #888;">First 1000 users</p>
+    </div>
+    <div class="phase-card">
+      <h4>Growth</h4>
+      <div class="phase-cost">$2K-10K</div>
+      <p style="font-size: 0.9rem; color: #888;">Scaling to 10K users</p>
+    </div>
+    <div class="phase-card">
+      <h4>Enterprise</h4>
+      <div class="phase-cost">$10K+</div>
+      <p style="font-size: 0.9rem; color: #888;">100K+ users</p>
+    </div>
+  </div>
+  
+  <table class="comparison-table">
+    <thead>
+      <tr>
+        <th>Service</th>
+        <th>Free Tier</th>
+        <th>Paid Tier</th>
+        <th>Cost Driver</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>OpenAI GPT-4</td>
+        <td>None</td>
+        <td>$0.03/1K tokens</td>
+        <td>Conversation length & frequency</td>
+      </tr>
+      <tr>
+        <td>ElevenLabs</td>
+        <td>10K chars/month</td>
+        <td>$5-330/month</td>
+        <td>Voice generation minutes</td>
+      </tr>
+      <tr>
+        <td>Pinecone</td>
+        <td>1M vectors</td>
+        <td>$70-2000/month</td>
+        <td>Number of memories stored</td>
+      </tr>
+      <tr>
+        <td>Neo4j Aura</td>
+        <td>None</td>
+        <td>$65-1000/month</td>
+        <td>Graph size & queries</td>
+      </tr>
+      <tr>
+        <td>AWS S3</td>
+        <td>5GB</td>
+        <td>$0.023/GB/month</td>
+        <td>Media storage volume</td>
+      </tr>
+      <tr>
+        <td>Stripe</td>
+        <td>None</td>
+        <td>2.9% + $0.30</td>
+        <td>Transaction volume</td>
+      </tr>
+      <tr>
+        <td>Grafana Cloud</td>
+        <td>10K metrics</td>
+        <td>$50-500/month</td>
+        <td>Monitoring complexity</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <div class="savings-tips">
+    <h3>💡 Cost Optimization Tips</h3>
+    <ul>
+      <li><strong>Cache AI Responses:</strong> Store common ancestor responses to reduce API calls by 40-60%</li>
+      <li><strong>Batch Process:</strong> Group voice generation and avatar creation during off-peak hours</li>
+      <li><strong>Use Spot Instances:</strong> Run non-critical workloads on AWS Spot for 70% savings</li>
+      <li><strong>Progressive Loading:</strong> Only generate high-res avatars for active conversations</li>
+      <li><strong>Tiered Storage:</strong> Move old memories to Glacier for 90% storage savings</li>
+      <li><strong>Self-Host Options:</strong> Consider self-hosting Neo4j and vector DB at scale</li>
+      <li><strong>Reserved Capacity:</strong> Commit to 1-year AWS/Azure reservations for 30-50% discount</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // Cost calculation logic
+  function calculateCosts() {
+    const users = parseInt(document.getElementById('users').value);
+    const ancestors = parseInt(document.getElementById('ancestors').value);
+    const conversations = parseInt(document.getElementById('conversations').value);
+    const storage = parseInt(document.getElementById('storage').value);
+    const videoCalls = parseInt(document.getElementById('video-calls').value);
+    
+    // Update display values
+    document.getElementById('users-value').textContent = users.toLocaleString();
+    document.getElementById('ancestors-value').textContent = ancestors.toLocaleString();
+    document.getElementById('conversations-value').textContent = conversations.toLocaleString();
+    document.getElementById('storage-value').textContent = storage + ' TB';
+    document.getElementById('video-calls-value').textContent = videoCalls.toLocaleString();
+    
+    // AI Costs
+    const tokensPerConversation = 2000; // Average tokens per conversation
+    const monthlyTokens = conversations * 30 * tokensPerConversation;
+    const openaiCost = (monthlyTokens / 1000) * 0.03;
+    
+    const voiceMinutesPerAncestor = 10; // Initial voice generation
+    const elevenLabsCost = Math.max(5, (ancestors * voiceMinutesPerAncestor * 0.30));
+    
+    const didCost = videoCalls * 30 * 0.10; // $0.10 per video generation
+    
+    const totalAiCost = openaiCost + elevenLabsCost + didCost;
+    
+    // Storage Costs
+    const s3Cost = storage * 1000 * 0.023; // $0.023 per GB
+    const vectorsPerAncestor = 1000;
+    const pineconeCost = ancestors > 1000 ? 70 : 0; // Jump to paid tier
+    const neo4jCost = ancestors > 100 ? 65 : 0; // Aura professional
+    
+    const totalStorageCost = s3Cost + pineconeCost + neo4jCost;
+    
+    // Infrastructure Costs
+    const ecsCost = Math.max(50, users * 0.05); // Scaling compute
+    const cdnCost = (storage * 100); // Assuming 10% of storage is served monthly
+    const lbCost = 25; // Fixed ALB cost
+    
+    const totalInfraCost = ecsCost + cdnCost + lbCost;
+    
+    // Services Costs
+    const monthlyRevenue = users * 29.99; // Assuming $29.99/month subscription
+    const stripeCost = (monthlyRevenue * 0.029) + (users * 0.30);
+    const grafanaCost = users > 1000 ? 50 : 0;
+    const unleashCost = users > 1000 ? 80 : 0;
+    
+    const totalServicesCost = stripeCost + grafanaCost + unleashCost;
+    
+    // Update UI
+    document.getElementById('openai-cost').textContent = '$' + openaiCost.toFixed(2);
+    document.getElementById('elevenlabs-cost').textContent = '$' + elevenLabsCost.toFixed(2);
+    document.getElementById('did-cost').textContent = '$' + didCost.toFixed(2);
+    document.getElementById('ai-cost').textContent = '$' + totalAiCost.toFixed(2);
+    
+    document.getElementById('s3-cost').textContent = '$' + s3Cost.toFixed(2);
+    document.getElementById('pinecone-cost').textContent = '$' + pineconeCost.toFixed(2);
+    document.getElementById('neo4j-cost').textContent = '$' + neo4jCost.toFixed(2);
+    document.getElementById('storage-cost').textContent = '$' + totalStorageCost.toFixed(2);
+    
+    document.getElementById('ecs-cost').textContent = '$' + ecsCost.toFixed(2);
+    document.getElementById('cdn-cost').textContent = '$' + cdnCost.toFixed(2);
+    document.getElementById('lb-cost').textContent = '$' + lbCost.toFixed(2);
+    document.getElementById('infra-cost').textContent = '$' + totalInfraCost.toFixed(2);
+    
+    document.getElementById('stripe-cost').textContent = '$' + stripeCost.toFixed(2);
+    document.getElementById('grafana-cost').textContent = '$' + grafanaCost.toFixed(2);
+    document.getElementById('unleash-cost').textContent = '$' + unleashCost.toFixed(2);
+    document.getElementById('services-cost').textContent = '$' + totalServicesCost.toFixed(2);
+    
+    const totalCost = totalAiCost + totalStorageCost + totalInfraCost + totalServicesCost;
+    document.getElementById('total-cost').textContent = '$' + totalCost.toFixed(2);
+    document.getElementById('per-user-cost').textContent = '$' + (totalCost / users).toFixed(2);
+  }
+  
+  // Add event listeners
+  document.querySelectorAll('input[type="range"]').forEach(input => {
+    input.addEventListener('input', calculateCosts);
+  });
+  
+  // Initial calculation
+  calculateCosts();
+</script>
+
+</body>
+</html>

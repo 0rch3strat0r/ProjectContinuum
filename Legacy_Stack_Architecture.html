@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Legacy Stack Architecture – ContinuumOS</title>
+<style>
+  * {box-sizing: border-box; margin: 0; padding: 0;}
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+    color: #333;
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+  
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .header {
+    text-align: center;
+    padding: 3rem 0;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+  
+  h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1rem;
+    animation: fadeInUp 0.8s ease-out;
+  }
+  
+  .subtitle {
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.8);
+    font-weight: 300;
+    animation: fadeInUp 0.8s ease-out 0.2s;
+    animation-fill-mode: both;
+  }
+  
+  .card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    animation: slideIn 0.6s ease-out;
+    animation-fill-mode: both;
+  }
+  
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+    background-size: 300% 100%;
+    animation: gradient 3s ease infinite;
+  }
+  
+  @keyframes gradient {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  h2 {
+    font-size: 2rem;
+    color: #302b63;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  h2::before {
+    content: '';
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .card:nth-child(1) h2::before { content: '🏛️'; }
+  .card:nth-child(2) h2::before { content: '💾'; }
+  .card:nth-child(3) h2::before { content: '🌐'; }
+  .card:nth-child(4) h2::before { content: '🔐'; }
+  .card:nth-child(5) h2::before { content: '🔄'; }
+  .card:nth-child(6) h2::before { content: '🚀'; }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    background: #f8f9ff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  }
+  
+  th {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 1rem 1.2rem;
+    text-align: left;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  td {
+    padding: 1rem 1.2rem;
+    border-bottom: 1px solid #e5e7f0;
+    transition: all 0.3s ease;
+  }
+  
+  tr:hover td {
+    background: #f0f2ff;
+    transform: scale(1.01);
+  }
+  
+  tr:last-child td {
+    border-bottom: none;
+  }
+  
+  code {
+    background: linear-gradient(135deg, #e0e7ff, #f0e7ff);
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    color: #5a4fcf;
+    white-space: nowrap;
+  }
+  
+  .tech-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    margin: 0.2rem;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .tech-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.5);
+  }
+  
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  
+  .feature-card {
+    background: linear-gradient(135deg, #f5f7ff, #e8ecff);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+  }
+  
+  .feature-card:hover {
+    border-color: #667eea;
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+  }
+  
+  .feature-card h3 {
+    color: #302b63;
+    margin-bottom: 0.5rem;
+    font-size: 1.2rem;
+  }
+  
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+  
+  ul li {
+    position: relative;
+    padding-left: 2rem;
+    margin-bottom: 0.8rem;
+    color: #4a5568;
+  }
+  
+  ul li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: #667eea;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+  
+  .workflow-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin: 2rem 0;
+  }
+  
+  .workflow-step {
+    flex: 1;
+    min-width: 200px;
+    text-align: center;
+    position: relative;
+  }
+  
+  .workflow-step::after {
+    content: '→';
+    position: absolute;
+    right: -1.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 2rem;
+    color: #667eea;
+    opacity: 0.5;
+  }
+  
+  .workflow-step:last-child::after {
+    display: none;
+  }
+  
+  .workflow-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1rem;
+    font-size: 2rem;
+    color: white;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .workflow-step:hover .workflow-icon {
+    transform: scale(1.1) rotate(5deg);
+  }
+  
+  .highlight-box {
+    background: linear-gradient(135deg, #ffeaa7, #fdcb6e);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-left: 5px solid #f39c12;
+    box-shadow: 0 5px 20px rgba(243, 156, 18, 0.2);
+  }
+  
+  .highlight-box h3 {
+    color: #d35400;
+    margin-bottom: 0.5rem;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .card:nth-child(1) { animation-delay: 0.1s; }
+  .card:nth-child(2) { animation-delay: 0.2s; }
+  .card:nth-child(3) { animation-delay: 0.3s; }
+  .card:nth-child(4) { animation-delay: 0.4s; }
+  .card:nth-child(5) { animation-delay: 0.5s; }
+  .card:nth-child(6) { animation-delay: 0.6s; }
+  
+  @media (max-width: 768px) {
+    h1 { font-size: 2.5rem; }
+    .subtitle { font-size: 1.2rem; }
+    .card { padding: 1.5rem; }
+    .workflow-step::after { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Legacy Stack Architecture</h1>
+    <p class="subtitle">The Technical Foundation of Digital Immortality</p>
+  </div>
+
+  <div class="card">
+    <h2>Platform Architecture</h2>
+    <p style="font-size: 1.1rem; margin-bottom: 1.5rem; color: #4a5568;">
+      <strong>ContinuumOS</strong> serves as the foundational platform hosting multiple vertical experiences. 
+      <strong>LegacySphere</strong> represents the family-oriented genealogy pillar, while Brand VR Archive (BVA) 
+      and Learning VR Archive (LVA) leverage the same core engines with specialized templates.
+    </p>
+    
+    <div class="workflow-section">
+      <div class="workflow-step">
+        <div class="workflow-icon">📥</div>
+        <h4>Ingestion</h4>
+        <p>Photos, voice, text</p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">🧠</div>
+        <h4>AI Processing</h4>
+        <p>Memory synthesis</p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">👤</div>
+        <h4>Avatar Creation</h4>
+        <p>Living personas</p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">🌍</div>
+        <h4>Multi-Channel</h4>
+        <p>VR, AR, Holo, Web</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Data Architecture</h2>
+    <table>
+      <tr>
+        <th>Layer</th>
+        <th>Component</th>
+        <th>Technology</th>
+        <th>Purpose</th>
+      </tr>
+      <tr>
+        <td><strong>Immutable Persona</strong></td>
+        <td>Core Artifact</td>
+        <td><code>JSON + S3</code></td>
+        <td>Life facts, portrait, baseline voice signature</td>
+      </tr>
+      <tr>
+        <td><strong>Memory Stream</strong></td>
+        <td>Kernel</td>
+        <td><code>DynamoDB</code></td>
+        <td>Append-only log of interactions & uploads</td>
+      </tr>
+      <tr>
+        <td><strong>Context Layer</strong></td>
+        <td>Historical Store</td>
+        <td><code>ElasticSearch</code></td>
+        <td>Public events, zeitgeist data for RAG enhancement</td>
+      </tr>
+      <tr>
+        <td><strong>Relations Graph</strong></td>
+        <td>Artifact Linking</td>
+        <td><code>Neo4j</code></td>
+        <td>Family connections, temporal relationships</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Interaction Channels</h2>
+    <table>
+      <tr>
+        <th>Channel</th>
+        <th>Experience</th>
+        <th>Core Technology</th>
+        <th>Unique Features</th>
+      </tr>
+      <tr>
+        <td><strong>Web/Mobile Chat</strong></td>
+        <td>FaceTime-style conversations</td>
+        <td><code>WebRTC + MediaPipe</code></td>
+        <td>Real-time facial animation, emotion detection</td>
+      </tr>
+      <tr>
+        <td><strong>Podcast Generation</strong></td>
+        <td>Auto-generated family stories</td>
+        <td><code>TTS + Descript API</code></td>
+        <td>Multi-voice narratives, era-appropriate music</td>
+      </tr>
+      <tr>
+        <td><strong>Video Memories</strong></td>
+        <td>Documentary-style episodes</td>
+        <td><code>SDXL + Runway</code></td>
+        <td>Photo animation, scene reconstruction</td>
+      </tr>
+      <tr>
+        <td><strong>Hologram Display</strong></td>
+        <td>Life-size projections</td>
+        <td><code>Proto/Looking Glass</code></td>
+        <td>Gesture synthesis, spatial audio</td>
+      </tr>
+      <tr>
+        <td><strong>VR Presence</strong></td>
+        <td>Full immersive interaction</td>
+        <td><code>Unity + Vision SDK</code></td>
+        <td>Hand tracking, eye contact, proximity sensing</td>
+      </tr>
+      <tr>
+        <td><strong>AR Companion</strong></td>
+        <td>Location-based stories</td>
+        <td><code>ARCore/ARKit + SLAM</code></td>
+        <td>GPS triggers, environmental awareness</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Governance & Access Control</h2>
+    
+    <div class="feature-grid">
+      <div class="feature-card">
+        <h3>🔑 Account Hierarchy</h3>
+        <ul>
+          <li>Primary Steward (estate-transferable)</li>
+          <li>Family Contributors (memory proposals)</li>
+          <li>View-only Relatives (consumption)</li>
+          <li>Public Legacy Mode (post-mortem)</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h3>🛡️ Consent Management</h3>
+        <ul>
+          <li>Blockchain-anchored permissions</li>
+          <li>Granular content controls</li>
+          <li>GDPR-compliant data portability</li>
+          <li>Inheritance smart contracts</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h3>💾 Archive Structure</h3>
+        <ul>
+          <li>S3 Glacier for cold storage</li>
+          <li>CDN-distributed media</li>
+          <li>IPFS backup option</li>
+          <li>Encrypted family vaults</li>
+        </ul>
+      </div>
+    </div>
+    
+    <div class="highlight-box">
+      <h3>🔄 Memory Approval Workflow</h3>
+      <p>Family members can propose new memories, stories, or corrections. The Primary Steward reviews and approves additions to the Memory Kernel, ensuring accuracy while enabling collaborative family history building.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>External Integration APIs</h2>
+    
+    <table>
+      <tr>
+        <th>Platform</th>
+        <th>Phase 1 Integration</th>
+        <th>Phase 2+ Vision</th>
+        <th>Value Unlock</th>
+      </tr>
+      <tr>
+        <td><strong>FamilySearch</strong></td>
+        <td>OAuth + GEDCOM import</td>
+        <td>Bulk artifact API, co-branded experience</td>
+        <td>6,300+ global centers, 1.6B profiles</td>
+      </tr>
+      <tr>
+        <td><strong>Ancestry</strong></td>
+        <td>Manual GEDCOM upload</td>
+        <td>Premium API partnership</td>
+        <td>3M+ paying subscribers</td>
+      </tr>
+      <tr>
+        <td><strong>MyHeritage</strong></td>
+        <td>Photo animation exchange</td>
+        <td>Deep Nostalgia integration</td>
+        <td>117M+ animated photos</td>
+      </tr>
+      <tr>
+        <td><strong>FindMyPast</strong></td>
+        <td>UK/Irish record matching</td>
+        <td>Historical context enrichment</td>
+        <td>2B+ historical records</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h2>Future Capabilities Roadmap</h2>
+    
+    <div class="workflow-section">
+      <div class="workflow-step">
+        <div class="workflow-icon">🧬</div>
+        <h4>Phase 1</h4>
+        <p>Core personality engine</p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">🎭</div>
+        <h4>Phase 2</h4>
+        <p>Emotion & gesture synthesis</p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">🌐</div>
+        <h4>Phase 3</h4>
+        <p>Multi-language personas</p>
+      </div>
+      <div class="workflow-step">
+        <div class="workflow-icon">♾️</div>
+        <h4>Phase 4</h4>
+        <p>Autonomous memory growth</p>
+      </div>
+    </div>
+    
+    <div class="feature-grid" style="margin-top: 2rem;">
+      <div class="feature-card">
+        <h3>🎯 Near-term (6-12 months)</h3>
+        <ul>
+          <li>Multi-persona conversations</li>
+          <li>Dream sequence generation</li>
+          <li>Handwriting synthesis</li>
+          <li>Period-accurate environments</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h3>🚀 Mid-term (1-2 years)</h3>
+        <ul>
+          <li>Full-body motion capture</li>
+          <li>Smell & touch memories</li>
+          <li>Predictive life events</li>
+          <li>Cross-reality persistence</li>
+        </ul>
+      </div>
+      
+      <div class="feature-card">
+        <h3>🌟 Long-term (3-5 years)</h3>
+        <ul>
+          <li>Neural interface compatibility</li>
+          <li>Quantum memory storage</li>
+          <li>Consciousness transfer protocols</li>
+          <li>Time-dilated experiences</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

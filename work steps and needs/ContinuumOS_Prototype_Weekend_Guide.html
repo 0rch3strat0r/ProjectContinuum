@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - Prototype Weekend: 48-Hour MVP Guide</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0f2e 100%);
+    color: #e0e0e0;
+    min-height: 100vh;
+  }
+  
+  .hero {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+    padding: 4rem 2rem;
+    text-align: center;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+  }
+  
+  h1 {
+    font-size: 3.5rem;
+    margin: 0;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+  
+  .tagline {
+    font-size: 1.5rem;
+    color: #888;
+    margin-top: 1rem;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+  
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #667eea, #f093fb);
+    transform: translateX(-50%);
+  }
+  
+  .day-section {
+    margin-bottom: 4rem;
+  }
+  
+  .day-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .day-title {
+    display: inline-block;
+    background: rgba(102, 126, 234, 0.2);
+    border: 2px solid #667eea;
+    border-radius: 30px;
+    padding: 1rem 2rem;
+    font-size: 2rem;
+    font-weight: 600;
+  }
+  
+  .time-block {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 3rem;
+    position: relative;
+  }
+  
+  .time-block:nth-child(even) {
+    flex-direction: row-reverse;
+  }
+  
+  .time-label {
+    flex: 0 0 100px;
+    text-align: center;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #667eea;
+    padding-top: 1rem;
+  }
+  
+  .time-block:nth-child(even) .time-label {
+    text-align: center;
+  }
+  
+  .task-card {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 0 2rem;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .task-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+    transform: translateY(-5px);
+  }
+  
+  .task-card h3 {
+    color: #f093fb;
+    margin-top: 0;
+    font-size: 1.5rem;
+  }
+  
+  .task-checklist {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+  
+  .task-checklist li {
+    padding: 0.5rem 0;
+    padding-left: 2rem;
+    position: relative;
+  }
+  
+  .task-checklist li::before {
+    content: '□';
+    position: absolute;
+    left: 0;
+    color: #667eea;
+    font-size: 1.2rem;
+  }
+  
+  pre {
+    background: #0a0a1a;
+    border: 1px solid #2a2a3e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    font-size: 0.85rem;
+    color: #58d1eb;
+    margin: 1rem 0;
+  }
+  
+  code {
+    font-family: 'SF Mono', Monaco, monospace;
+  }
+  
+  .quick-win {
+    background: rgba(76, 175, 80, 0.1);
+    border-left: 4px solid #4caf50;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 5px;
+  }
+  
+  .pro-tip {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 5px;
+  }
+  
+  .milestone {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(240, 147, 251, 0.2) 100%);
+    border: 2px solid #667eea;
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 3rem 0;
+    text-align: center;
+  }
+  
+  .milestone h3 {
+    color: #fff;
+    font-size: 2rem;
+    margin-top: 0;
+  }
+  
+  .final-checklist {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 3rem;
+  }
+  
+  .demo-ready {
+    text-align: center;
+    padding: 3rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    margin-top: 3rem;
+  }
+  
+  .demo-ready h2 {
+    color: white;
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+  }
+  
+  @media (max-width: 768px) {
+    .timeline::before { display: none; }
+    .time-block, .time-block:nth-child(even) { flex-direction: column; }
+    .time-label { margin-bottom: 1rem; }
+    .task-card { margin: 0; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Prototype Weekend</h1>
+  <p class="tagline">Build a Working ContinuumOS Demo in 48 Hours</p>
+</div>
+
+<div class="container">
+  <div class="milestone">
+    <h3>🎯 Weekend Goal</h3>
+    <p>Create a demo where users can:</p>
+    <ul style="list-style: none; padding: 0;">
+      <li>✓ Upload a photo and text about a deceased relative</li>
+      <li>✓ Generate an AI persona that speaks like them</li>
+      <li>✓ Have a basic text conversation</li>
+      <li>✓ See a simple animated avatar</li>
+    </ul>
+  </div>
+
+  <div class="timeline">
+    <!-- FRIDAY EVENING -->
+    <div class="day-section">
+      <div class="day-header">
+        <h2 class="day-title">Friday Evening (6 PM - 11 PM)</h2>
+      </div>
+      
+      <div class="time-block">
+        <div class="time-label">6:00 PM</div>
+        <div class="task-card">
+          <h3>🏗️ Environment Setup</h3>
+          <ul class="task-checklist">
+            <li>Install Docker Desktop</li>
+            <li>Install Node.js 18+ and Python 3.10+</li>
+            <li>Create project folder structure</li>
+            <li>Sign up for free API keys (OpenAI, Pinecone)</li>
+          </ul>
+          <pre><code># Quick setup script
+mkdir continuum-prototype && cd continuum-prototype
+mkdir api web services uploads
+
+# Create Python environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install core dependencies
+pip install fastapi uvicorn openai pinecone-client python-multipart</code></pre>
+        </div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">7:30 PM</div>
+        <div class="task-card">
+          <h3>🚀 FastAPI Backend</h3>
+          <ul class="task-checklist">
+            <li>Create basic API structure</li>
+            <li>Set up file upload endpoint</li>
+            <li>Test with Swagger UI</li>
+          </ul>
+          <pre><code># api/main.py
+from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
+import shutil
+
+app = FastAPI(title="ContinuumOS Prototype")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.post("/upload")
+async def upload_heritage(
+    photo: UploadFile = File(...),
+    text: UploadFile = File(...)
+):
+    # Save files
+    with open(f"uploads/{photo.filename}", "wb") as f:
+        shutil.copyfileobj(photo.file, f)
+    
+    with open(f"uploads/{text.filename}", "wb") as f:
+        shutil.copyfileobj(text.file, f)
+    
+    return {"message": "Files uploaded", "photo": photo.filename}
+
+# Run: uvicorn main:app --reload</code></pre>
+          <div class="quick-win">
+            <strong>Quick Win:</strong> Navigate to http://localhost:8000/docs to see auto-generated API docs!
+          </div>
+        </div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">9:00 PM</div>
+        <div class="task-card">
+          <h3>💾 Vector Database Setup</h3>
+          <ul class="task-checklist">
+            <li>Initialize Pinecone index</li>
+            <li>Create memory storage function</li>
+            <li>Test with sample data</li>
+          </ul>
+          <pre><code># services/memory_store.py
+import pinecone
+from sentence_transformers import SentenceTransformer
+
+pinecone.init(api_key="YOUR-API-KEY", environment="gcp-starter")
+
+# Create index if not exists
+if "continuum-demo" not in pinecone.list_indexes():
+    pinecone.create_index("continuum-demo", dimension=384, metric="cosine")
+
+index = pinecone.Index("continuum-demo")
+model = SentenceTransformer('all-MiniLM-L6-v2')
+
+def store_memory(ancestor_id: str, text: str):
+    embedding = model.encode(text).tolist()
+    index.upsert([(f"{ancestor_id}-{hash(text)}", embedding, {"text": text})])
+    
+# Test it
+store_memory("grandpa-joe", "I loved fishing at the lake every Sunday")</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SATURDAY -->
+    <div class="day-section">
+      <div class="day-header">
+        <h2 class="day-title">Saturday (9 AM - 11 PM)</h2>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">9:00 AM</div>
+        <div class="task-card">
+          <h3>🧠 AI Persona Engine</h3>
+          <ul class="task-checklist">
+            <li>Create persona prompt template</li>
+            <li>Implement RAG pipeline</li>
+            <li>Test conversation flow</li>
+          </ul>
+          <pre><code># services/persona.py
+import openai
+from .memory_store import index, model
+
+openai.api_key = "YOUR-OPENAI-KEY"
+
+def create_persona(name: str, bio: str, memories: list):
+    return f"""You are {name}. {bio}
+    
+Your memories include:
+{chr(10).join(f"- {m}" for m in memories)}
+
+Respond as {name} would, using their speech patterns and knowledge.
+Never break character. If asked about something you don't know, 
+respond as {name} would have."""
+
+def chat_with_ancestor(ancestor_id: str, message: str):
+    # Search memories
+    query_embedding = model.encode(message).tolist()
+    results = index.query(
+        vector=query_embedding,
+        top_k=5,
+        include_metadata=True,
+        filter={"ancestor_id": ancestor_id}
+    )
+    
+    memories = [r.metadata['text'] for r in results.matches]
+    
+    # Generate response
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": create_persona("Grandpa Joe", "A fisherman", memories)},
+            {"role": "user", "content": message}
+        ]
+    )
+    
+    return response.choices[0].message.content</code></pre>
+        </div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">11:00 AM</div>
+        <div class="task-card">
+          <h3>🎨 React Frontend</h3>
+          <ul class="task-checklist">
+            <li>Create Next.js app with TypeScript</li>
+            <li>Build upload interface</li>
+            <li>Design chat component</li>
+          </ul>
+          <pre><code># Terminal
+npx create-next-app@latest web --typescript --tailwind --app
+cd web
+npm install axios react-dropzone
+
+# app/page.tsx
+'use client'
+import { useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+
+export default function Home() {
+  const [photo, setPhoto] = useState(null)
+  const [bio, setBio] = useState('')
+  const [uploading, setUploading] = useState(false)
+  
+  const { getRootProps, getInputProps } = useDropzone({
+    accept: { 'image/*': [] },
+    onDrop: files => setPhoto(files[0])
+  })
+  
+  const handleUpload = async () => {
+    setUploading(true)
+    const formData = new FormData()
+    formData.append('photo', photo)
+    formData.append('text', new Blob([bio], { type: 'text/plain' }))
+    
+    await fetch('http://localhost:8000/upload', {
+      method: 'POST',
+      body: formData
+    })
+    
+    // Navigate to chat
+    window.location.href = '/chat'
+  }
+  
+  return (
+    <div className="min-h-screen bg-black text-white p-8">
+      <h1 className="text-4xl mb-8">Create Your Ancestor's Avatar</h1>
+      
+      <div {...getRootProps()} className="border-2 border-dashed p-8 mb-4">
+        <input {...getInputProps()} />
+        {photo ? <p>{photo.name}</p> : <p>Drop photo here</p>}
+      </div>
+      
+      <textarea
+        className="w-full p-4 bg-gray-900 rounded"
+        placeholder="Tell us about them..."
+        value={bio}
+        onChange={(e) => setBio(e.target.value)}
+        rows={5}
+      />
+      
+      <button
+        onClick={handleUpload}
+        disabled={!photo || !bio || uploading}
+        className="mt-4 px-6 py-3 bg-purple-600 rounded"
+      >
+        {uploading ? 'Creating Avatar...' : 'Create Avatar'}
+      </button>
+    </div>
+  )
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">2:00 PM</div>
+        <div class="task-card">
+          <h3>💬 Chat Interface</h3>
+          <ul class="task-checklist">
+            <li>Create chat component</li>
+            <li>Connect to backend API</li>
+            <li>Add typing indicators</li>
+          </ul>
+          <pre><code># app/chat/page.tsx
+'use client'
+import { useState } from 'react'
+
+export default function Chat() {
+  const [messages, setMessages] = useState([])
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  
+  const sendMessage = async () => {
+    const userMessage = { role: 'user', content: input }
+    setMessages([...messages, userMessage])
+    setInput('')
+    setLoading(true)
+    
+    const response = await fetch('http://localhost:8000/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        ancestor_id: 'grandpa-joe',
+        message: input
+      })
+    })
+    
+    const data = await response.json()
+    setMessages(m => [...m, { role: 'ancestor', content: data.response }])
+    setLoading(false)
+  }
+  
+  return (
+    <div className="min-h-screen bg-black text-white p-8">
+      <div className="max-w-2xl mx-auto">
+        <h1 className="text-3xl mb-8">Chat with Grandpa Joe</h1>
+        
+        <div className="space-y-4 mb-8">
+          {messages.map((msg, i) => (
+            <div key={i} className={`p-4 rounded ${
+              msg.role === 'user' ? 'bg-blue-900' : 'bg-purple-900'
+            }`}>
+              {msg.content}
+            </div>
+          ))}
+          {loading && <div className="text-gray-500">Grandpa is thinking...</div>}
+        </div>
+        
+        <div className="flex gap-4">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            className="flex-1 p-4 bg-gray-900 rounded"
+            placeholder="Ask Grandpa something..."
+          />
+          <button
+            onClick={sendMessage}
+            className="px-6 py-4 bg-purple-600 rounded"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}</code></pre>
+          <div class="pro-tip">
+            <strong>Pro Tip:</strong> Add localStorage to persist chat history between sessions!
+          </div>
+        </div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">5:00 PM</div>
+        <div class="task-card">
+          <h3>🎭 Simple Avatar</h3>
+          <ul class="task-checklist">
+            <li>Create animated CSS avatar</li>
+            <li>Add speaking animation</li>
+            <li>Sync with chat responses</li>
+          </ul>
+          <pre><code># components/Avatar.tsx
+export function Avatar({ speaking }: { speaking: boolean }) {
+  return (
+    <div className="relative w-64 h-64 mx-auto">
+      {/* Simple CSS Avatar */}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-400 to-blue-500">
+        {/* Face */}
+        <div className="absolute inset-4 rounded-full bg-white/90">
+          {/* Eyes */}
+          <div className="absolute top-16 left-12 w-4 h-4 bg-black rounded-full" />
+          <div className="absolute top-16 right-12 w-4 h-4 bg-black rounded-full" />
+          
+          {/* Mouth */}
+          <div className={`absolute bottom-16 left-1/2 transform -translate-x-1/2
+            w-12 h-2 bg-black rounded-full transition-all duration-200
+            ${speaking ? 'h-6 animate-pulse' : ''}`} 
+          />
+        </div>
+      </div>
+      
+      {/* Speaking indicator */}
+      {speaking && (
+        <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
+          <div className="flex gap-1">
+            <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" />
+            <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce delay-100" />
+            <span className="w-2 h-2 bg-purple-500 rounded-full animate-bounce delay-200" />
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">8:00 PM</div>
+        <div class="task-card">
+          <h3>🔗 Integration & Polish</h3>
+          <ul class="task-checklist">
+            <li>Connect all components</li>
+            <li>Add error handling</li>
+            <li>Create demo data</li>
+            <li>Test full flow</li>
+          </ul>
+          <pre><code># api/main.py - Complete integration
+from fastapi import FastAPI, UploadFile, File, HTTPException
+from pydantic import BaseModel
+import services.persona as persona
+import services.memory_store as memory
+
+app = FastAPI()
+
+class ChatRequest(BaseModel):
+    ancestor_id: str
+    message: str
+
+@app.post("/create-ancestor")
+async def create_ancestor(
+    name: str,
+    photo: UploadFile = File(...),
+    bio: UploadFile = File(...)
+):
+    # Save files
+    photo_path = f"uploads/{photo.filename}"
+    with open(photo_path, "wb") as f:
+        f.write(await photo.read())
+    
+    bio_text = (await bio.read()).decode('utf-8')
+    
+    # Process bio into memories
+    memories = bio_text.split('\n')
+    for memory in memories:
+        if memory.strip():
+            memory.store_memory(name, memory.strip())
+    
+    return {
+        "ancestor_id": name,
+        "photo_url": f"/uploads/{photo.filename}",
+        "status": "created"
+    }
+
+@app.post("/chat")
+async def chat(request: ChatRequest):
+    try:
+        response = persona.chat_with_ancestor(
+            request.ancestor_id,
+            request.message
+        )
+        return {"response": response}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))</code></pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- SUNDAY -->
+    <div class="day-section">
+      <div class="day-header">
+        <h2 class="day-title">Sunday (10 AM - 6 PM)</h2>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">10:00 AM</div>
+        <div class="task-card">
+          <h3>🎥 Demo Scenarios</h3>
+          <ul class="task-checklist">
+            <li>Create 3 sample ancestors with rich backgrounds</li>
+            <li>Prepare demo conversation flows</li>
+            <li>Test edge cases</li>
+          </ul>
+          <pre><code># demo_data.py
+DEMO_ANCESTORS = {
+    "grandpa-joe": {
+        "name": "Joe Thompson",
+        "born": "1925",
+        "died": "1995",
+        "bio": "WWII veteran, loved fishing, had a workshop",
+        "memories": [
+            "I served in the Pacific during WWII",
+            "Every Sunday, I'd take the kids fishing at Miller's Lake",
+            "Built my first boat in 1952 in my garage",
+            "Met your grandma at a dance in 1946",
+            "My secret to catching trout was patience and the right fly"
+        ],
+        "speech_pattern": "Folksy, uses 'well now' and 'I reckon'"
+    },
+    "grandma-mary": {
+        "name": "Mary Thompson",
+        "born": "1928",
+        "died": "2003",
+        "bio": "School teacher, amazing cook, gardener",
+        "memories": [
+            "Taught 3rd grade for 35 years at Lincoln Elementary",
+            "My apple pie won the county fair three years running",
+            "Had the best rose garden in the neighborhood",
+            "Used to sing in the church choir every Sunday",
+            "My mother's recipe book was my most treasured possession"
+        ],
+        "speech_pattern": "Warm, often starts with 'Oh dear' or 'Bless your heart'"
+    }
+}</code></pre>
+        </div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">12:00 PM</div>
+        <div class="task-card">
+          <h3>📱 Mobile Responsive</h3>
+          <ul class="task-checklist">
+            <li>Test on phone browsers</li>
+            <li>Fix layout issues</li>
+            <li>Optimize touch interactions</li>
+          </ul>
+          <div class="quick-win">
+            <strong>Quick Win:</strong> Use ngrok to test on real phones: <code>ngrok http 3000</code>
+          </div>
+        </div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">2:00 PM</div>
+        <div class="task-card">
+          <h3>🚀 Docker Package</h3>
+          <ul class="task-checklist">
+            <li>Create Docker Compose file</li>
+            <li>Test fresh install</li>
+            <li>Create one-line setup</li>
+          </ul>
+          <pre><code># docker-compose.yml
+version: '3.9'
+
+services:
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PINECONE_API_KEY=${PINECONE_API_KEY}
+    volumes:
+      - ./uploads:/app/uploads
+
+  web:
+    build: ./web
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:8000
+
+# One-line start
+# docker-compose up --build</code></pre>
+        </div>
+      </div>
+
+      <div class="time-block">
+        <div class="time-label">4:00 PM</div>
+        <div class="task-card">
+          <h3>📊 Demo Presentation</h3>
+          <ul class="task-checklist">
+            <li>Create slide deck</li>
+            <li>Record demo video</li>
+            <li>Prepare talking points</li>
+          </ul>
+          <div class="pro-tip">
+            <strong>Pro Tip:</strong> Use OBS Studio to record a polished demo video with your webcam overlay!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="final-checklist">
+    <h2>✅ Final Demo Checklist</h2>
+    <ul style="list-style: none; padding: 0;">
+      <li>☐ User can upload photo and bio text</li>
+      <li>☐ System creates searchable memory database</li>
+      <li>☐ AI generates contextual responses based on memories</li>
+      <li>☐ Simple avatar shows speaking animation</li>
+      <li>☐ Chat interface works smoothly</li>
+      <li>☐ Mobile responsive design</li>
+      <li>☐ Docker compose for easy setup</li>
+      <li>☐ 3 demo ancestors ready to show</li>
+      <li>☐ 5-minute demo video recorded</li>
+    </ul>
+  </div>
+
+  <div class="demo-ready">
+    <h2>🎉 Demo Ready!</h2>
+    <p style="font-size: 1.3rem; margin-top: 1rem;">
+      You now have a working ContinuumOS prototype that demonstrates:
+    </p>
+    <ul style="list-style: none; padding: 0; margin-top: 1rem;">
+      <li>✨ AI-powered conversations with deceased relatives</li>
+      <li>✨ Memory-based contextual responses</li>
+      <li>✨ Simple but effective avatar visualization</li>
+      <li>✨ Easy-to-use upload interface</li>
+    </ul>
+    <p style="margin-top: 2rem; font-size: 1.2rem;">
+      Perfect for investor demos, team presentations, or early user testing!
+    </p>
+  </div>
+</div>
+
+</body>
+</html>

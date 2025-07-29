@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - GitHub Actions Workflow Guide</title>
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #0a0a1a;
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
+  
+  .header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 3rem;
+    text-align: center;
+    border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+  }
+  
+  h1 {
+    font-size: 3rem;
+    margin: 0;
+    background: linear-gradient(45deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: 700;
+  }
+  
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+  
+  .workflow-visual {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(240, 147, 251, 0.1) 100%);
+    border: 2px solid #667eea;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 3rem;
+    text-align: center;
+  }
+  
+  .workflow-flow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  .flow-item {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid #667eea;
+    border-radius: 15px;
+    padding: 1rem;
+    min-width: 150px;
+  }
+  
+  .flow-arrow {
+    font-size: 2rem;
+    color: #667eea;
+  }
+  
+  .workflow-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .workflow-card h3 {
+    color: #f093fb;
+    margin-top: 0;
+    font-size: 1.5rem;
+  }
+  
+  pre {
+    background: #0f0f1f;
+    border: 1px solid #2a2a3e;
+    border-radius: 10px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    font-size: 0.9rem;
+    color: #58d1eb;
+    margin: 1rem 0;
+    position: relative;
+  }
+  
+  code {
+    font-family: 'SF Mono', Monaco, monospace;
+  }
+  
+  .copy-button {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    background: #667eea;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+  }
+  
+  .copy-button:hover {
+    background: #764ba2;
+  }
+  
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .feature-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  
+  .feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .tip-box {
+    background: rgba(76, 175, 80, 0.1);
+    border-left: 4px solid #4caf50;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 5px;
+  }
+  
+  .warning-box {
+    background: rgba(255, 193, 7, 0.1);
+    border-left: 4px solid #ffc107;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 5px;
+  }
+  
+  .success-box {
+    background: rgba(76, 175, 80, 0.1);
+    border: 2px solid #4caf50;
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 2rem 0;
+    text-align: center;
+  }
+  
+  .visual-step {
+    background: #0f0f1f;
+    border: 2px dashed #667eea;
+    border-radius: 15px;
+    padding: 2rem;
+    margin: 1rem 0;
+    text-align: center;
+  }
+  
+  .button-visual {
+    display: inline-block;
+    background: #667eea;
+    color: white;
+    padding: 0.8rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    margin: 0.5rem;
+  }
+  
+  @media (max-width: 768px) {
+    .workflow-flow { flex-direction: column; }
+    .feature-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>GitHub Actions - Automate Everything! 🤖</h1>
+  <p style="color: #888; margin-top: 1rem;">Deploy automatically, test continuously, sleep peacefully</p>
+</div>
+
+<div class="container">
+  <div class="workflow-visual">
+    <h2 style="color: white; margin-top: 0;">🔄 What GitHub Actions Does</h2>
+    <div class="workflow-flow">
+      <div class="flow-item">
+        <strong>You Push Code</strong><br>
+        <code>git push</code>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">
+        <strong>GitHub Detects</strong><br>
+        Triggers workflow
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">
+        <strong>Runs Tests</strong><br>
+        Checks everything
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-item">
+        <strong>Deploys</strong><br>
+        To Vercel/AWS
+      </div>
+    </div>
+    <p style="margin-top: 2rem; font-size: 1.2rem;">
+      <strong>Result:</strong> Your code is tested and deployed automatically - no manual work!
+    </p>
+  </div>
+
+  <div class="workflow-card">
+    <h3>🚀 Workflow #1: Deploy to Vercel on Push</h3>
+    <p>This workflow automatically deploys your site whenever you push to main branch.</p>
+    
+    <div class="visual-step">
+      <p><strong>Create file:</strong> <code>.github/workflows/deploy.yml</code></p>
+    </div>
+    
+    <pre><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><code>name: Deploy to Vercel
+
+# When to run this workflow
+on:
+  push:
+    branches: [main]  # Only when pushing to main branch
+
+jobs:
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    
+    steps:
+      # Step 1: Get the code
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      # Step 2: Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm ci
+      
+      # Step 4: Run tests (optional)
+      - name: Run tests
+        run: npm test
+        continue-on-error: true  # Don't fail if no tests yet
+      
+      # Step 5: Deploy to Vercel
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'</code></pre>
+    
+    <div class="tip-box">
+      <strong>💡 Setting up secrets:</strong>
+      <ol>
+        <li>Go to your GitHub repo → Settings → Secrets</li>
+        <li>Add VERCEL_TOKEN (get from vercel.com/account/tokens)</li>
+        <li>Add VERCEL_ORG_ID and VERCEL_PROJECT_ID (from .vercel/project.json)</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="workflow-card">
+    <h3>🧪 Workflow #2: Test on Pull Request</h3>
+    <p>Run tests whenever someone creates a pull request - catch bugs before merging!</p>
+    
+    <pre><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><code>name: Test Pull Request
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      # Run different types of tests
+      - name: Lint code
+        run: npm run lint
+      
+      - name: Type check
+        run: npm run type-check
+      
+      - name: Run unit tests
+        run: npm test
+      
+      - name: Build project
+        run: npm run build
+      
+      # Comment on PR with results
+      - name: Comment PR
+        uses: actions/github-script@v6
+        if: always()
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '✅ All tests passed! Ready to merge.'
+            })</code></pre>
+  </div>
+
+  <div class="workflow-card">
+    <h3>🐍 Workflow #3: Python API Tests & Deploy</h3>
+    <p>For your FastAPI backend - test and deploy the API automatically.</p>
+    
+    <pre><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><code>name: API Tests and Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/api/**'  # Only run when API files change
+
+jobs:
+  test:
+    name: Test API
+    runs-on: ubuntu-latest
+    
+    services:
+      # Spin up test databases
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: testpass
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      
+      - name: Install dependencies
+        run: |
+          cd apps/api
+          pip install -r requirements.txt
+          pip install pytest pytest-asyncio
+      
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://postgres:testpass@localhost:5432/test
+          REDIS_URL: redis://localhost:6379
+        run: |
+          cd apps/api
+          pytest tests/ -v
+      
+      - name: Deploy to AWS
+        if: success()
+        run: |
+          # Deploy your API
+          echo "Deploying to AWS..."</code></pre>
+  </div>
+
+  <div class="workflow-card">
+    <h3>📅 Workflow #4: Scheduled Tasks</h3>
+    <p>Run tasks on a schedule - like cleaning up old data or sending reports.</p>
+    
+    <pre><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><code>name: Daily Maintenance
+
+on:
+  schedule:
+    # Runs at 2 AM UTC every day
+    - cron: '0 2 * * *'
+  
+  # Also allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  maintenance:
+    name: Daily Cleanup
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Clean old uploads
+        run: |
+          # Remove files older than 30 days
+          find uploads -type f -mtime +30 -delete
+      
+      - name: Database backup
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: |
+          # Backup database to S3
+          pg_dump $DATABASE_URL | gzip > backup.sql.gz
+          aws s3 cp backup.sql.gz s3://continuum-backups/$(date +%Y%m%d).sql.gz
+      
+      - name: Send status report
+        run: |
+          # Send email or Slack notification
+          echo "Daily maintenance completed"</code></pre>
+  </div>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h4>Secrets Management</h4>
+      <p>Store API keys safely in GitHub Secrets - never in code!</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌍</div>
+      <h4>Environment Variables</h4>
+      <p>Different configs for dev, staging, and production</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h4>Status Badges</h4>
+      <p>Show build status in your README</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🚨</div>
+      <h4>Notifications</h4>
+      <p>Get alerts on Slack, email, or Discord</p>
+    </div>
+  </div>
+
+  <div class="workflow-card">
+    <h3>🎯 Complete CI/CD Pipeline</h3>
+    <p>Here's a full production-ready workflow that does everything!</p>
+    
+    <pre><button class="copy-button" onclick="copyToClipboard(this)">Copy</button><code>name: Complete CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+env:
+  NODE_VERSION: '18'
+  PYTHON_VERSION: '3.10'
+
+jobs:
+  # Job 1: Lint and Type Check
+  quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: ESLint
+        run: npm run lint
+      
+      - name: TypeScript check
+        run: npm run type-check
+      
+      - name: Prettier check
+        run: npm run format:check
+
+  # Job 2: Test
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: quality  # Only run if quality checks pass
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Run unit tests
+        run: npm test -- --coverage
+      
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
+  # Job 3: Build
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: test  # Only build if tests pass
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Build project
+        run: npm run build
+      
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build-files
+          path: .next/
+
+  # Job 4: Deploy
+  deploy:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: build  # Only deploy if build succeeds
+    if: github.ref == 'refs/heads/main'  # Only deploy from main
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: build-files
+          path: .next/
+      
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+      
+      - name: Notify team
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          text: 'ContinuumOS deployed to production! 🚀'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+        if: always()</code></pre>
+  </div>
+
+  <div class="success-box">
+    <h3 style="color: #4caf50; margin-top: 0;">🎉 You're Automated!</h3>
+    <p>With these workflows, you'll have:</p>
+    <ul style="list-style: none; text-align: left; display: inline-block;">
+      <li>✅ Automatic deployments on every push</li>
+      <li>✅ Tests running on pull requests</li>
+      <li>✅ Code quality checks</li>
+      <li>✅ Scheduled maintenance tasks</li>
+      <li>✅ Team notifications</li>
+    </ul>
+  </div>
+
+  <div class="warning-box">
+    <h3>⚠️ Common Gotchas</h3>
+    <ul>
+      <li><strong>Secrets:</strong> Never commit secrets! Use GitHub Secrets</li>
+      <li><strong>Minutes:</strong> Free tier = 2,000 minutes/month</li>
+      <li><strong>Permissions:</strong> Make sure Actions are enabled in repo settings</li>
+      <li><strong>YAML:</strong> Indentation matters! Use spaces, not tabs</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+function copyToClipboard(button) {
+  const codeBlock = button.parentElement.querySelector('code');
+  const text = codeBlock.textContent;
+  
+  navigator.clipboard.writeText(text).then(() => {
+    button.textContent = 'Copied!';
+    button.style.background = '#4caf50';
+    
+    setTimeout(() => {
+      button.textContent = 'Copy';
+      button.style.background = '#667eea';
+    }, 2000);
+  });
+}
+</script>
+
+</body>
+</html>

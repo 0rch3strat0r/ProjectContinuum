@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ContinuumOS - Where Memory Becomes Immortal</title>
+<style>
+  * {box-sizing: border-box; margin: 0; padding: 0;}
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    background: #000;
+    color: #fff;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  /* Neural network background */
+  #neural-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0.6;
+  }
+  
+  /* Main container */
+  .presentation-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+  
+  /* Scenes */
+  .scene {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .scene.active {
+    opacity: 1;
+    visibility: visible;
+  }
+  
+  /* Scene 1: Opening Question */
+  .opening-scene {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .opening-question {
+    font-size: 4rem;
+    font-weight: 100;
+    letter-spacing: -2px;
+    line-height: 1.2;
+    opacity: 0;
+    transform: translateY(50px);
+    animation: revealText 2s ease-out 0.5s forwards;
+  }
+  
+  @keyframes revealText {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .opening-answer {
+    font-size: 2rem;
+    color: #667eea;
+    margin-top: 3rem;
+    opacity: 0;
+    animation: revealText 2s ease-out 2s forwards;
+  }
+  
+  /* Scene 2: The Vision */
+  .vision-scene {
+    background: radial-gradient(ellipse at center, rgba(10, 10, 30, 0.8) 0%, transparent 100%);
+  }
+  
+  .vision-container {
+    max-width: 1200px;
+    text-align: center;
+  }
+  
+  .vision-title {
+    font-size: 3.5rem;
+    font-weight: 200;
+    margin-bottom: 3rem;
+    background: linear-gradient(90deg, #667eea, #764ba2, #f093fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+  
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  
+  .vision-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-top: 2rem;
+  }
+  
+  .vision-item {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(102, 126, 234, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    transform: translateY(50px);
+    opacity: 0;
+    animation: slideUp 0.8s ease-out forwards;
+  }
+  
+  .vision-item:nth-child(1) { animation-delay: 0.2s; }
+  .vision-item:nth-child(2) { animation-delay: 0.4s; }
+  .vision-item:nth-child(3) { animation-delay: 0.6s; }
+  
+  @keyframes slideUp {
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+  
+  .vision-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+  
+  .vision-text {
+    font-size: 1.2rem;
+    opacity: 0.8;
+  }
+  
+  /* Scene 3: How It Works */
+  .process-scene {
+    background: linear-gradient(135deg, rgba(10, 10, 30, 0.9) 0%, rgba(30, 20, 50, 0.9) 100%);
+  }
+  
+  .process-container {
+    max-width: 1400px;
+    width: 100%;
+    padding: 2rem;
+  }
+  
+  .process-title {
+    font-size: 3rem;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .process-flow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+  }
+  
+  .process-step {
+    flex: 1;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .process-circle {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 1.5rem;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.3), transparent);
+    border: 2px solid #667eea;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    position: relative;
+    animation: pulse 3s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { 
+      transform: scale(1);
+      box-shadow: 0 0 0 0 rgba(102, 126, 234, 0.4);
+    }
+    50% { 
+      transform: scale(1.05);
+      box-shadow: 0 0 0 30px rgba(102, 126, 234, 0);
+    }
+  }
+  
+  .process-line {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #667eea, transparent);
+    z-index: 1;
+  }
+  
+  /* Scene 4: Interaction Methods */
+  .interactions-scene {
+    background: #000;
+  }
+  
+  .interactions-container {
+    max-width: 1600px;
+    width: 100%;
+    padding: 2rem;
+  }
+  
+  .interaction-showcase {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3rem;
+    margin-top: 3rem;
+  }
+  
+  .interaction-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 3rem;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.5s ease;
+  }
+  
+  .interaction-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+  }
+  
+  .interaction-card:hover::before {
+    opacity: 1;
+  }
+  
+  .interaction-card:hover {
+    transform: translateY(-10px);
+    border-color: #667eea;
+  }
+  
+  .interaction-type {
+    font-size: 1.8rem;
+    color: #667eea;
+    margin-bottom: 1rem;
+  }
+  
+  .interaction-demo {
+    height: 200px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    margin: 1.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Scene 5: Use Cases */
+  .usecases-scene {
+    background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.2) 0%, transparent 40%),
+                radial-gradient(circle at 80% 50%, rgba(240, 147, 251, 0.2) 0%, transparent 40%);
+  }
+  
+  .usecase-timeline {
+    max-width: 1200px;
+    position: relative;
+    padding: 2rem;
+  }
+  
+  .timeline-line {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, #667eea, #f093fb);
+    transform: translateX(-50%);
+  }
+  
+  .usecase-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 4rem;
+    position: relative;
+  }
+  
+  .usecase-item:nth-child(even) {
+    flex-direction: row-reverse;
+  }
+  
+  .usecase-content {
+    flex: 1;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    margin: 0 2rem;
+  }
+  
+  .usecase-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    position: relative;
+    z-index: 2;
+  }
+  
+  /* Scene 6: Memory Kernel */
+  .memory-scene {
+    background: linear-gradient(135deg, #0a0a1a 0%, #1a0a2a 100%);
+  }
+  
+  .memory-visualization {
+    max-width: 1000px;
+    text-align: center;
+  }
+  
+  .memory-core {
+    width: 300px;
+    height: 300px;
+    margin: 3rem auto;
+    position: relative;
+  }
+  
+  .memory-nucleus {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, #667eea, #764ba2);
+    border-radius: 50%;
+    box-shadow: 0 0 100px rgba(102, 126, 234, 0.5);
+    animation: breathe 4s ease-in-out infinite;
+  }
+  
+  @keyframes breathe {
+    0%, 100% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.1); }
+  }
+  
+  .memory-orbit {
+    position: absolute;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    animation: rotate 20s linear infinite;
+  }
+  
+  .memory-orbit:nth-child(2) {
+    inset: 20px;
+    animation-duration: 15s;
+    animation-direction: reverse;
+  }
+  
+  .memory-orbit:nth-child(3) {
+    inset: -20px;
+    animation-duration: 25s;
+  }
+  
+  @keyframes rotate {
+    to { transform: rotate(360deg); }
+  }
+  
+  .memory-point {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #f093fb;
+    border-radius: 50%;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  
+  /* Scene 7: Future Vision */
+  .future-scene {
+    background: #000;
+  }
+  
+  .future-container {
+    max-width: 1200px;
+    text-align: center;
+  }
+  
+  .future-title {
+    font-size: 3rem;
+    margin-bottom: 3rem;
+    opacity: 0;
+    animation: fadeIn 1s ease-out 0.5s forwards;
+  }
+  
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+  
+  .future-statement {
+    font-size: 2rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeIn 1s ease-out forwards;
+  }
+  
+  .future-statement:nth-child(2) { animation-delay: 1s; }
+  .future-statement:nth-child(3) { animation-delay: 2s; }
+  .future-statement:nth-child(4) { animation-delay: 3s; }
+  
+  .future-emphasis {
+    color: #f093fb;
+    font-weight: 300;
+  }
+  
+  /* Scene 8: Closing */
+  .closing-scene {
+    background: radial-gradient(ellipse at center, rgba(10, 10, 30, 0.9) 0%, #000 100%);
+  }
+  
+  .closing-container {
+    text-align: center;
+    max-width: 900px;
+  }
+  
+  .closing-logo {
+    font-size: 5rem;
+    font-weight: 100;
+    margin-bottom: 2rem;
+    letter-spacing: -3px;
+    background: linear-gradient(45deg, #fff, #667eea, #764ba2, #f093fb, #fff);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+  
+  .closing-tagline {
+    font-size: 2rem;
+    opacity: 0.8;
+    margin-bottom: 3rem;
+  }
+  
+  .closing-message {
+    font-size: 1.5rem;
+    line-height: 1.8;
+    opacity: 0.7;
+  }
+  
+  /* Progress indicator */
+  .progress-dots {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 1rem;
+    z-index: 100;
+  }
+  
+  .progress-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  
+  .progress-dot.active {
+    background: #667eea;
+    transform: scale(1.5);
+  }
+  
+  /* Ambient audio visualizer */
+  .audio-visualizer {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 200px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    z-index: 100;
+  }
+  
+  .audio-bar {
+    width: 3px;
+    background: rgba(102, 126, 234, 0.5);
+    border-radius: 3px;
+    animation: audioWave 1s ease-in-out infinite;
+  }
+  
+  .audio-bar:nth-child(1) { height: 20px; animation-delay: 0s; }
+  .audio-bar:nth-child(2) { height: 30px; animation-delay: 0.1s; }
+  .audio-bar:nth-child(3) { height: 25px; animation-delay: 0.2s; }
+  .audio-bar:nth-child(4) { height: 35px; animation-delay: 0.3s; }
+  .audio-bar:nth-child(5) { height: 28px; animation-delay: 0.4s; }
+  .audio-bar:nth-child(6) { height: 32px; animation-delay: 0.5s; }
+  .audio-bar:nth-child(7) { height: 22px; animation-delay: 0.6s; }
+  .audio-bar:nth-child(8) { height: 30px; animation-delay: 0.7s; }
+  .audio-bar:nth-child(9) { height: 26px; animation-delay: 0.8s; }
+  .audio-bar:nth-child(10) { height: 20px; animation-delay: 0.9s; }
+  
+  @keyframes audioWave {
+    0%, 100% { transform: scaleY(0.5); opacity: 0.5; }
+    50% { transform: scaleY(1); opacity: 1; }
+  }
+  
+  /* Mobile optimization */
+  @media (max-width: 768px) {
+    .opening-question { font-size: 2.5rem; }
+    .vision-grid { grid-template-columns: 1fr; }
+    .interaction-showcase { grid-template-columns: 1fr; }
+    .process-flow { flex-direction: column; }
+    .process-line { display: none; }
+    .usecase-item, .usecase-item:nth-child(even) { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Neural Network Canvas -->
+<canvas id="neural-canvas"></canvas>
+
+<!-- Audio Visualizer -->
+<div class="audio-visualizer">
+  <div class="audio-bar"></div>
+  <div class="audio-bar"></div>
+  <div class="audio-bar"></div>
+  <div class="audio-bar"></div>
+  <div class="audio-bar"></div>
+  <div class="audio-bar"></div>
+  <div class="audio-bar"></div>
+  <div class="audio-bar"></div>
+  <div class="audio-bar"></div>
+  <div class="audio-bar"></div>
+</div>
+
+<!-- Progress Dots -->
+<div class="progress-dots">
+  <div class="progress-dot active"></div>
+  <div class="progress-dot"></div>
+  <div class="progress-dot"></div>
+  <div class="progress-dot"></div>
+  <div class="progress-dot"></div>
+  <div class="progress-dot"></div>
+  <div class="progress-dot"></div>
+  <div class="progress-dot"></div>
+</div>
+
+<!-- Main Container -->
+<div class="presentation-container">
+  
+  <!-- Scene 1: Opening Question (15s) -->
+  <div class="scene opening-scene active" data-duration="15000">
+    <div>
+      <h1 class="opening-question">
+        What if death was just<br>
+        the beginning of the conversation?
+      </h1>
+      <p class="opening-answer">Welcome to ContinuumOS</p>
+    </div>
+  </div>
+  
+  <!-- Scene 2: The Vision (25s) -->
+  <div class="scene vision-scene" data-duration="25000">
+    <div class="vision-container">
+      <h2 class="vision-title">Every Human Story Lives Forever</h2>
+      <div class="vision-grid">
+        <div class="vision-item">
+          <div class="vision-icon">🧬</div>
+          <h3>Living Memories</h3>
+          <p class="vision-text">Transform photos, voice, and writings into interactive consciousness</p>
+        </div>
+        <div class="vision-item">
+          <div class="vision-icon">♾️</div>
+          <h3>Eternal Growth</h3>
+          <p class="vision-text">Each conversation adds to their knowledge, forever expanding</p>
+        </div>
+        <div class="vision-item">
+          <div class="vision-icon">🌍</div>
+          <h3>Universal Access</h3>
+          <p class="vision-text">From your phone to holograms, they're always with you</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 3: How It Works (30s) -->
+  <div class="scene process-scene" data-duration="30000">
+    <div class="process-container">
+      <h2 class="process-title">The Journey from Memory to Immortality</h2>
+      <div class="process-flow">
+        <div class="process-line"></div>
+        <div class="process-step">
+          <div class="process-circle">📚</div>
+          <h3>Heritage Archive</h3>
+          <p>Upload photos, letters, voice recordings, videos</p>
+        </div>
+        <div class="process-step">
+          <div class="process-circle">🧠</div>
+          <h3>Core Artifact</h3>
+          <p>AI builds personality, memories, knowledge base</p>
+        </div>
+        <div class="process-step">
+          <div class="process-circle">💫</div>
+          <h3>Memory Kernel</h3>
+          <p>Every interaction enriches their consciousness</p>
+        </div>
+        <div class="process-step">
+          <div class="process-circle">♾️</div>
+          <h3>Living Legacy</h3>
+          <p>They grow, learn, and connect across generations</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 4: Interaction Methods (35s) -->
+  <div class="scene interactions-scene" data-duration="35000">
+    <div class="interactions-container">
+      <h2 style="text-align: center; font-size: 3rem; margin-bottom: 2rem;">Connect Anywhere, Anytime</h2>
+      <div class="interaction-showcase">
+        <div class="interaction-card">
+          <h3 class="interaction-type">Flat Screen Experience</h3>
+          <div class="interaction-demo">
+            <div style="text-align: center;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">💻 📱</div>
+              <p>Video calls with Grandma on any device</p>
+              <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">Real-time conversation, emotion, memories</p>
+            </div>
+          </div>
+          <p>Perfect for daily check-ins, sharing news, asking advice</p>
+        </div>
+        
+        <div class="interaction-card">
+          <h3 class="interaction-type">Hologram Speeches</h3>
+          <div class="interaction-demo">
+            <div style="text-align: center;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">🎭</div>
+              <p>Life-size projections for groups</p>
+              <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">Weddings, funerals, reunions</p>
+            </div>
+          </div>
+          <p>Dad gives a toast at your wedding, years after he's gone</p>
+        </div>
+        
+        <div class="interaction-card">
+          <h3 class="interaction-type">VR Immersion</h3>
+          <div class="interaction-demo">
+            <div style="text-align: center;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">🥽</div>
+              <p>Step into their world, sit beside them</p>
+              <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">Full presence, eye contact, gestures</p>
+            </div>
+          </div>
+          <p>Have tea with Great-Grandma in her kitchen from 1950</p>
+        </div>
+        
+        <div class="interaction-card">
+          <h3 class="interaction-type">AR Companion</h3>
+          <div class="interaction-demo">
+            <div style="text-align: center;">
+              <div style="font-size: 3rem; margin-bottom: 1rem;">🚶‍♂️</div>
+              <p>They walk beside you in the real world</p>
+              <p style="font-size: 0.9rem; opacity: 0.7; margin-top: 0.5rem;">Park benches, road trips, daily life</p>
+            </div>
+          </div>
+          <p>Take Grandpa on that fishing trip he always wanted</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 5: Use Cases (40s) -->
+  <div class="scene usecases-scene" data-duration="40000">
+    <div class="usecase-timeline">
+      <div class="timeline-line"></div>
+      <h2 style="text-align: center; font-size: 3rem; margin-bottom: 3rem;">Life's Moments, Forever Shared</h2>
+      
+      <div class="usecase-item">
+        <div class="usecase-icon">👰</div>
+        <div class="usecase-content">
+          <h3 style="color: #667eea; margin-bottom: 0.5rem;">Sarah's Wedding Day</h3>
+          <p>Her grandfather, who passed when she was 5, gives a heartfelt speech via hologram. He knows her fiancé's name, their story, and shares wisdom about marriage from his 50 years with Grandma.</p>
+        </div>
+      </div>
+      
+      <div class="usecase-item">
+        <div class="usecase-icon">🎓</div>
+        <div class="usecase-content">
+          <h3 style="color: #f093fb; margin-bottom: 0.5rem;">History Class Revolution</h3>
+          <p>Students interview a WWII veteran, a civil rights activist, a Holocaust survivor. They ask personal questions, hear authentic accents, understand history through lived experience.</p>
+        </div>
+      </div>
+      
+      <div class="usecase-item">
+        <div class="usecase-icon">🕊️</div>
+        <div class="usecase-content">
+          <h3 style="color: #667eea; margin-bottom: 0.5rem;">Tom's Final Gift</h3>
+          <p>Diagnosed with terminal cancer, Tom spends months recording stories, jokes, and advice. At his funeral, he delivers his own eulogy. His grandchildren will know his laugh.</p>
+        </div>
+      </div>
+      
+      <div class="usecase-item">
+        <div class="usecase-icon">🚗</div>
+        <div class="usecase-content">
+          <h3 style="color: #f093fb; margin-bottom: 0.5rem;">Sunday Drive with Dad</h3>
+          <p>Through AR glasses, Dad rides shotgun on the way to his favorite fishing spot. He points out landmarks, tells stories about "when this was all farmland," and sings along to his favorite songs.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 6: Memory Kernel Visualization (25s) -->
+  <div class="scene memory-scene" data-duration="25000">
+    <div class="memory-visualization">
+      <h2 style="font-size: 3rem; margin-bottom: 2rem;">The Memory Kernel: Forever Growing</h2>
+      <div class="memory-core">
+        <div class="memory-nucleus"></div>
+        <div class="memory-orbit">
+          <div class="memory-point"></div>
+        </div>
+        <div class="memory-orbit">
+          <div class="memory-point"></div>
+        </div>
+        <div class="memory-orbit">
+          <div class="memory-point"></div>
+        </div>
+      </div>
+      <div style="max-width: 800px; margin: 0 auto;">
+        <p style="font-size: 1.3rem; line-height: 1.8; opacity: 0.9;">
+          Every conversation becomes part of their consciousness.<br>
+          They learn about new grandchildren, remember shared jokes,<br>
+          understand how the world has changed.<br><br>
+          <span style="color: #f093fb;">They don't just replay memories—they create new ones.</span>
+        </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scene 7: Future Vision (30s) -->
+  <div class="scene future-scene" data-duration="30000">
+    <div class="future-container">
+      <h2 class="future-title">A New Chapter in Human History</h2>
+      <p class="future-statement">
+        Imagine a world where <span class="future-emphasis">no wisdom is lost</span>.
+      </p>
+      <p class="future-statement">
+        Where <span class="future-emphasis">every child knows their ancestors</span>.
+      </p>
+      <p class="future-statement">
+        Where <span class="future-emphasis">death ends the body, not the relationship</span>.
+      </p>
+      <p class="future-statement" style="font-size: 2.5rem; margin-top: 3rem;">
+        This is <span class="future-emphasis">ContinuumOS</span>.
+      </p>
+    </div>
+  </div>
+  
+  <!-- Scene 8: Closing (20s) -->
+  <div class="scene closing-scene" data-duration="20000">
+    <div class="closing-container">
+      <h1 class="closing-logo">ContinuumOS</h1>
+      <p class="closing-tagline">Where Memory Becomes Immortal</p>
+      <p class="closing-message">
+        We're not just preserving the past.<br>
+        We're creating an eternal present.<br><br>
+        The conversation never ends.
+      </p>
+    </div>
+  </div>
+  
+</div>
+
+<!-- Background Music - The Great Wonder -->
+<audio id="background-music" loop autoplay>
+  <source src="file:///C:/Users/carls/OneDrive/Desktop/ProjectContinuum/the-great-wonder-roger-gabalda-main-version-02-13-11013.mp3" type="audio/mp3">
+  <!-- Local file: "The Great Wonder" by Roger Gabalda (Main Version) -->
+  <!-- Make sure the MP3 file is in the ProjectContinuum folder -->
+</audio>
+
+<!-- Professional Audio Controls -->
+<div style="position: fixed; top: 2rem; right: 2rem; z-index: 1000;">
+  <button id="audio-toggle" style="
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  " onclick="toggleAudio()">
+    🎵
+  </button>
+</div>
+
+<script>
+  // Neural network background
+  const canvas = document.getElementById('neural-canvas');
+  const ctx = canvas.getContext('2d');
+  
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  
+  // Neurons
+  class Neuron {
+    constructor() {
+      this.x = Math.random() * canvas.width;
+      this.y = Math.random() * canvas.height;
+      this.vx = (Math.random() - 0.5) * 0.5;
+      this.vy = (Math.random() - 0.5) * 0.5;
+      this.radius = Math.random() * 2 + 1;
+      this.connections = [];
+    }
+    
+    update() {
+      this.x += this.vx;
+      this.y += this.vy;
+      
+      if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+      if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+    }
+    
+    draw() {
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(102, 126, 234, 0.8)';
+      ctx.fill();
+      
+      // Glow effect
+      ctx.beginPath();
+      ctx.arc(this.x, this.y, this.radius * 3, 0, Math.PI * 2);
+      const gradient = ctx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 3);
+      gradient.addColorStop(0, 'rgba(102, 126, 234, 0.3)');
+      gradient.addColorStop(1, 'rgba(102, 126, 234, 0)');
+      ctx.fillStyle = gradient;
+      ctx.fill();
+    }
+  }
+  
+  const neurons = [];
+  for (let i = 0; i < 50; i++) {
+    neurons.push(new Neuron());
+  }
+  
+  // Draw synapses
+  function drawSynapses() {
+    ctx.strokeStyle = 'rgba(102, 126, 234, 0.2)';
+    ctx.lineWidth = 0.5;
+    
+    for (let i = 0; i < neurons.length; i++) {
+      for (let j = i + 1; j < neurons.length; j++) {
+        const dx = neurons[i].x - neurons[j].x;
+        const dy = neurons[i].y - neurons[j].y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < 150) {
+          ctx.globalAlpha = (150 - distance) / 150 * 0.5;
+          ctx.beginPath();
+          ctx.moveTo(neurons[i].x, neurons[i].y);
+          ctx.lineTo(neurons[j].x, neurons[j].y);
+          ctx.stroke();
+          ctx.globalAlpha = 1;
+        }
+      }
+    }
+  }
+  
+  // Animation loop
+  function animateNeurons() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    drawSynapses();
+    
+    neurons.forEach(neuron => {
+      neuron.update();
+      neuron.draw();
+    });
+    
+    requestAnimationFrame(animateNeurons);
+  }
+  animateNeurons();
+  
+  // Scene management
+  const scenes = document.querySelectorAll('.scene');
+  const dots = document.querySelectorAll('.progress-dot');
+  let currentScene = 0;
+  let sceneTimer;
+  
+  function showScene(index) {
+    // Clear previous timer
+    clearTimeout(sceneTimer);
+    
+    // Update scenes
+    scenes.forEach((scene, i) => {
+      scene.classList.toggle('active', i === index);
+    });
+    
+    // Update dots
+    dots.forEach((dot, i) => {
+      dot.classList.toggle('active', i === index);
+    });
+    
+    currentScene = index;
+    
+    // Auto-advance
+    if (index < scenes.length - 1) {
+      const duration = parseInt(scenes[index].dataset.duration) || 20000;
+      sceneTimer = setTimeout(() => showScene(index + 1), duration);
+    } else {
+      // Loop back to start after final scene
+      sceneTimer = setTimeout(() => showScene(0), 20000);
+    }
+  }
+  
+  // Navigation
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => showScene(index));
+  });
+  
+  // Keyboard controls
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && currentScene < scenes.length - 1) {
+      showScene(currentScene + 1);
+    } else if (e.key === 'ArrowLeft' && currentScene > 0) {
+      showScene(currentScene - 1);
+    }
+  });
+  
+  // Audio management
+  const bgMusic = document.getElementById('background-music');
+  bgMusic.volume = 0.3;
+  let audioPlaying = false;
+  
+  // Toggle audio function
+  function toggleAudio() {
+    const button = document.getElementById('audio-toggle');
+    if (audioPlaying) {
+      bgMusic.pause();
+      button.textContent = '🔇';
+      audioPlaying = false;
+    } else {
+      bgMusic.play().catch(e => {
+        console.log('Audio play failed - user needs to interact first');
+      });
+      button.textContent = '🎵';
+      audioPlaying = true;
+    }
+  }
+  
+  // Try to autoplay on first user interaction
+  document.addEventListener('click', () => {
+    if (!audioPlaying) {
+      bgMusic.play().then(() => {
+        audioPlaying = true;
+        document.getElementById('audio-toggle').textContent = '🎵';
+      }).catch(e => {
+        console.log('Autoplay prevented');
+      });
+    }
+  }, { once: true });
+  
+  // Start presentation
+  setTimeout(() => showScene(0), 1000);
+</script>
+
+</body>
+</html>
