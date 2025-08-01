@@ -1,0 +1,132 @@
+
+* **Legacy‑Stack** = the *relational glue* that binds multiple Heritage‑Artifacts into one navigable family universe:  
+  *Stores who is married to whom, overlapping life events, and cross‑references needed for questions like “What did Grandma think when Grandpa enlisted?”*
+
+---
+
+## 2‑B . Refined Terminology
+
+| Term | Scope | What it stores | Primary use |
+|------|-------|----------------|-------------|
+| **Heritage‑Artifact** | **Individual** | Immutable bio, photos, baseline voice, personal Memory Kernel | Drives avatar synthesis for that person |
+| **Legacy‑Stack** | **Family** | Collection of artifacts plus a **Neo4j family graph** (`Person` → `Event` edges) | Enables cross‑person queries & timelines |
+| **Legacy‑Sphere** | **Vertical** | Genealogy product line (all families) | Consumer pricing, marketing, compliance |
+| **Continuum OS** | **Platform** | Ingestion, RAG, rendering, billing shared across verticals | Powers Brand VR Archive, Learning VR Archive next |
+
+---
+
+## 2‑C . Example Query Flow (Cross‑Artifact)
+
+> **User asks:** “What were my grandparents like as teenagers?”
+
+1. **Parse entities** → `Grandpa`, `Grandma`, age filter ≈ 13–19.  
+2. **Legacy‑Stack graph** locates `Event` nodes where `personAge` in range for each.  
+3. **Fetch snippets** from those events’ `source_id` in Chroma.  
+4. **Compose prompt** with **both artifacts’** bios + teenage event context.  
+5. **LLM respond**: merges Grandpa’s diary quote + Grandma’s school anecdote.  
+6. **If one artifact lacks data** → fallback sentence  
+   *“I don’t have enough information about Grandma’s teenage years yet. Ask a family member or upload more materials to enrich her Heritage‑Artifact.”*
+
+---
+
+## 2‑D . Data Tables Snapshot
+
+| Table / Collection | Key columns | Resides in |
+|--------------------|-------------|------------|
+| `Person` | `uuid`, `name`, `birthDate`, `artifact_id` | Neo4j |
+| `Event` | `uuid`, `date`, `description`, `location` | Neo4j |
+| `REL_MARRIED` | `startDate`, `endDate` | Neo4j |
+| `VectorChunks` | `chunk_id`, `artifact_id`, `text`, `embedding` | Chroma |
+| `MemoryKernel` | `kernel_id`, `artifact_id`, `timestamp`, `json_blob`, `dualSigHash` | S3 + DynamoDB |
+| `TimelineView` *(materialized)* | `event_id`, `personAge`, `relatedPersons[]` | Postgres (read‑optimised) |
+
+---
+
+## 2‑E . UX Copy Guidance
+
+*Front‑end labels to keep users oriented:*
+
+* **Artifact tab**  → “Grandpa James (Heritage‑Artifact)”  
+* **Family graph tab**  → “Legacy‑Stack”  
+* **Product brand**  → “Legacy‑Sphere powered by Continuum OS”
+
+---
+
+## 2‑F . Why this Matters for the Patent Packet
+
+* **Heritage‑Artifact** claims cover dual‑signature consent & kernel hashing.  
+* **Legacy‑Stack** claims add novelty for cross‑artifact timeline reasoning (graph + RAG fusion).  
+  *Draft dependent claim:*  
+  *“…wherein the method further comprises executing a graph traversal over a plurality of artifacts to generate a composite response involving at least two related individuals.”*
+
+---
+
+*Drop this block into the master doc, and all stakeholders (or Claude) will have an unambiguous mental model of how Heritage‑Artifacts roll up into the Legacy‑Stack, then into the larger Legacy‑Sphere vertical.*
+
+
+* **Legacy‑Stack** = the *relational glue* that binds multiple Heritage‑Artifacts into one navigable family universe:  
+  *Stores who is married to whom, overlapping life events, and cross‑references needed for questions like “What did Grandma think when Grandpa enlisted?”*
+
+---
+
+## 2‑B . Refined Terminology
+
+| Term | Scope | What it stores | Primary use |
+|------|-------|----------------|-------------|
+| **Heritage‑Artifact** | **Individual** | Immutable bio, photos, baseline voice, personal Memory Kernel | Drives avatar synthesis for that person |
+| **Legacy‑Stack** | **Family** | Collection of artifacts plus a **Neo4j family graph** (`Person` → `Event` edges) | Enables cross‑person queries & timelines |
+| **Legacy‑Sphere** | **Vertical** | Genealogy product line (all families) | Consumer pricing, marketing, compliance |
+| **Continuum OS** | **Platform** | Ingestion, RAG, rendering, billing shared across verticals | Powers Brand VR Archive, Learning VR Archive next |
+
+---
+
+## 2‑C . Example Query Flow (Cross‑Artifact)
+
+> **User asks:** “What were my grandparents like as teenagers?”
+
+1. **Parse entities** → `Grandpa`, `Grandma`, age filter ≈ 13–19.  
+2. **Legacy‑Stack graph** locates `Event` nodes where `personAge` in range for each.  
+3. **Fetch snippets** from those events’ `source_id` in Chroma.  
+4. **Compose prompt** with **both artifacts’** bios + teenage event context.  
+5. **LLM respond**: merges Grandpa’s diary quote + Grandma’s school anecdote.  
+6. **If one artifact lacks data** → fallback sentence  
+   *“I don’t have enough information about Grandma’s teenage years yet. Ask a family member or upload more materials to enrich her Heritage‑Artifact.”*
+
+---
+
+## 2‑D . Data Tables Snapshot
+
+| Table / Collection | Key columns | Resides in |
+|--------------------|-------------|------------|
+| `Person` | `uuid`, `name`, `birthDate`, `artifact_id` | Neo4j |
+| `Event` | `uuid`, `date`, `description`, `location` | Neo4j |
+| `REL_MARRIED` | `startDate`, `endDate` | Neo4j |
+| `VectorChunks` | `chunk_id`, `artifact_id`, `text`, `embedding` | Chroma |
+| `MemoryKernel` | `kernel_id`, `artifact_id`, `timestamp`, `json_blob`, `dualSigHash` | S3 + DynamoDB |
+| `TimelineView` *(materialized)* | `event_id`, `personAge`, `relatedPersons[]` | Postgres (read‑optimised) |
+
+---
+
+## 2‑E . UX Copy Guidance
+
+*Front‑end labels to keep users oriented:*
+
+* **Artifact tab**  → “Grandpa James (Heritage‑Artifact)”  
+* **Family graph tab**  → “Legacy‑Stack”  
+* **Product brand**  → “Legacy‑Sphere powered by Continuum OS”
+
+---
+
+## 2‑F . Why this Matters for the Patent Packet
+
+* **Heritage‑Artifact** claims cover dual‑signature consent & kernel hashing.  
+* **Legacy‑Stack** claims add novelty for cross‑artifact timeline reasoning (graph + RAG fusion).  
+  *Draft dependent claim:*  
+  *“…wherein the method further comprises executing a graph traversal over a plurality of artifacts to generate a composite response involving at least two related individuals.”*
+
+---
+
+*Drop this block into the master doc, and all stakeholders (or Claude) will have an unambiguous mental model of how Heritage‑Artifacts roll up into the Legacy‑Stack, then into the larger Legacy‑Sphere vertical.*
+
+
+
