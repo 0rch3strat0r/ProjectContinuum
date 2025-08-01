@@ -5,11 +5,11 @@ module.exports = {
     return [
       {
         source: "/api/ask",
-        destination: process.env.BACKEND_URL + "/ask"
+        destination: `${process.env.BACKEND_URL || 'http://localhost:7860'}/ask`
       },
       {
         source: "/api/podcast",
-        destination: process.env.BACKEND_URL + "/podcast"
+        destination: `${process.env.BACKEND_URL || 'http://localhost:7860'}/podcast`
       }
     ];
   }
